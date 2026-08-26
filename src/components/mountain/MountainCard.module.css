@@ -13,10 +13,33 @@
   border-color: var(--border-strong);
 }
 
-.ridge {
+.ridge,
+.ridgeClimbed {
   display: block;
   width: 100%;
   height: 90px;
+}
+
+.ridge .ridgeFill {
+  fill: var(--text-tertiary);
+  opacity: 0.08;
+}
+
+.ridge .ridgeStroke {
+  stroke: var(--text-tertiary);
+  stroke-width: 1.2;
+  opacity: 0.4;
+}
+
+.ridgeClimbed .ridgeFill {
+  fill: var(--green);
+  opacity: 0.1;
+}
+
+.ridgeClimbed .ridgeStroke {
+  stroke: var(--green);
+  stroke-width: 1.2;
+  opacity: 0.5;
 }
 
 .referenceLine {
@@ -60,9 +83,27 @@
   color: var(--text-secondary);
 }
 
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 8px;
+}
+
 .elevation {
-  margin: 8px 0 0;
+  margin: 0;
   font-size: 13px;
   font-weight: 600;
   color: var(--accent);
+}
+
+.dots {
+  display: flex;
+  gap: 4px;
+}
+
+.dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
 }

@@ -13,7 +13,9 @@ export const ALL_FILTERS: MountainFilters = {
   collectionId: null,
 }
 
-
+// country and climbed-status filters aren't here yet - country needs a
+// proper picker once the real dataset lands (18 peaks doesn't warrant one),
+// climbed status needs the persisted store from commit 12
 export function filterMountains(
   mountains: Mountain[],
   filters: MountainFilters,
@@ -55,4 +57,18 @@ export function getCountryMaxElevations(mountains: Mountain[]): Map<string, numb
     }
   }
   return maxByCountry
+}
+
+// reverse lookup, same reasoning as getCountryMaxElevations above - collections
+// own peakIds (commit 5), so cards need this the other way round to draw their dots
+export function getCollectionsByMountainId(collections: Collection[]): Map<string, Collection[]> {
+  const map = new Map<string, Collection[]>()
+  for (const collection of collections) {
+    for (const peakId of collection.peakIds) {
+      const existing = map.get(peakId) ?? []
+      existing.push(collection)
+      map.set(peakId, existing)
+    }
+  }
+  return map
 }

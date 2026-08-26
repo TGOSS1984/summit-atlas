@@ -10,76 +10,80 @@ const BASELINE = 82
 const TOP_MARGIN = 10
 const MAX_PEAK_HEIGHT = BASELINE - TOP_MARGIN
 
-// deterministic hash from a string - same peak always draws the same ridge,
-// no point re-randomising it on every render/reload
+// same unsigned-int hash trick peakbook uses (base-31 multiply-add) - keeps
+// our silhouette shape directly comparable to theirs
 function hashString(input: string): number {
-  let hash = 0
-  for (let i = 0; i < input.length; i++) {
-    hash = (hash << 5) - hash + input.charCodeAt(i)
-    hash |= 0
+  let hash = 7
+  for (const char of input) {
+    hash = (hash * 31 + char.charCodeAt(0)) >>> 0
   }
-  return Math.abs(hash)
+  return hash
 }
 
 // power curve so low peaks don't look flat and Everest doesn't tower off
-// the card - 0.65 eyeballed against the sample dataset, revisit once the
-// full dataset's elevation spread is known
+// the card - 0.65 matches peakbook's value, and it looks right here too
 function heightRatio(elevation: number): number {
-  return Math.pow(elevation / WORLD_MAX_ELEVATION, 0.65)
+  return Math.pow(Math.min(1, elevation / WORLD_MAX_ELEVATION), 0.65)
 }
 
-interface RidgePoint {
-  x: number
-  y: number
+type Point = [number, number]
+
+// single apex + one shoulder - same silhouette peakbook draws, reimplemented
+// against our own viewBox rather than reused from their file directly
+function buildRidgePoints(mountain: Mountain): Point[] {
+  const hash = hashString(mountain.id)
+  const apexY = BASELINE - heightRatio(mountain.elevation) * MAX_PEAK_HEIGHT
+
+  const apexX = 44 + (hash % 80)
+  const leftY = BASELINE - (hash % 5)
+  const midX = apexX * 0.45
+  const midY = (leftY + apexY) / 2 + 4
+  const shoulderX = Math.min(VIEW_WIDTH - 18, apexX + 18 + (hash % 16))
+  const shoulderY = apexY + (BASELINE - apexY) * 0.5
+  const rightY = BASELINE - ((hash >> 3) % 5)
+
+  return [
+    [0, leftY],
+    [midX, midY],
+    [apexX, apexY],
+    [shoulderX, shoulderY],
+    [VIEW_WIDTH, rightY],
+  ]
 }
 
-// walks left to right building a jagged ridge - seeded off the mountain id
-// so it's stable across renders but still varies card to card
-function buildRidgePoints(mountain: Mountain, pointCount = 7): RidgePoint[] {
-  const seed = hashString(mountain.id)
-  const peakHeight = heightRatio(mountain.elevation) * MAX_PEAK_HEIGHT
-  const points: RidgePoint[] = []
-
-  for (let i = 0; i <= pointCount; i++) {
-    const x = (VIEW_WIDTH / pointCount) * i
-    // shoulders taper toward both edges, apex sits near the middle point
-    const distanceFromCenter = Math.abs(i - pointCount / 2) / (pointCount / 2)
-    const shoulderFactor = Math.max(1 - Math.pow(distanceFromCenter, 1.4), 0)
-    const jitter = ((seed >> (i * 3)) % 11) - 5 // cheap pseudo-noise, -5..5
-    const y = Math.min(BASELINE - shoulderFactor * peakHeight + jitter, BASELINE)
-    points.push({ x, y })
-  }
-
-  return points
+function round(n: number): number {
+  return Math.round(n * 10) / 10
 }
 
-function pointsToPath(points: RidgePoint[]): string {
+function toPolyline(points: Point[]): string {
   const [first, ...rest] = points
-  const line = rest.map((p) => `L ${p.x.toFixed(1)} ${p.y.toFixed(1)}`).join(' ')
-  return `M ${first.x.toFixed(1)} ${first.y.toFixed(1)} ${line} L ${VIEW_WIDTH} ${BASELINE} L 0 ${BASELINE} Z`
+  const line = rest.map(([x, y]) => `L ${round(x)} ${round(y)}`).join(' ')
+  return `M ${round(first[0])} ${round(first[1])} ${line}`
+}
+
+// separate fill/stroke rather than one path - lets the card fade the fill
+// in behind the text and keep the stroke crisp, same layered look peakbook gets
+function toFilledShape(points: Point[]): string {
+  return `${toPolyline(points)} L ${VIEW_WIDTH} ${BASELINE} L 0 ${BASELINE} Z`
 }
 
 export interface RidgeSvgOptions {
-  // highest peak in this mountain's own country, if known - draws a second
-  // dashed line alongside the world one. left optional since not every
-  // caller has this handy yet
+  // highest peak in this mountain's own country, if known - left optional
+  // since not every caller has this handy yet
   countryMaxElevation?: number
 }
 
-// everything the card needs to draw itself - kept the maths out of the
-// component so this is testable without touching the DOM
 export interface RidgeSvgData {
-  path: string
+  fillPath: string
+  strokePath: string
   viewBox: string
   worldLineY: number | null
   countryLineY: number | null
 }
 
 export function buildRidgeSvg(mountain: Mountain, options: RidgeSvgOptions = {}): RidgeSvgData {
-  const path = pointsToPath(buildRidgePoints(mountain))
+  const points = buildRidgePoints(mountain)
 
-  // no point drawing a reference line exactly on top of the ridge it's
-  // referencing - only show it when this peak isn't already the record holder
   const worldLineY = mountain.elevation < WORLD_MAX_ELEVATION ? TOP_MARGIN : null
 
   const countryMax = options.countryMaxElevation
@@ -89,7 +93,8 @@ export function buildRidgeSvg(mountain: Mountain, options: RidgeSvgOptions = {})
       : null
 
   return {
-    path,
+    fillPath: toFilledShape(points),
+    strokePath: toPolyline(points),
     viewBox: `0 0 ${VIEW_WIDTH} ${VIEW_HEIGHT}`,
     worldLineY,
     countryLineY,

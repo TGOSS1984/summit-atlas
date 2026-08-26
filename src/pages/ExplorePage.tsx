@@ -1,7 +1,12 @@
 import { useMemo, useState } from 'react'
 import { MOUNTAINS } from '../data/mountains'
 import { COLLECTIONS } from '../data/collections'
-import { filterMountains, getCountryMaxElevations, type MountainFilters } from '../utils/filterMountains'
+import {
+  filterMountains,
+  getCountryMaxElevations,
+  getCollectionsByMountainId,
+  type MountainFilters,
+} from '../utils/filterMountains'
 import { MountainCard } from '../components/mountain/MountainCard'
 import { FilterChips } from '../components/explore/FilterChips'
 import styles from './ExplorePage.module.css'
@@ -20,8 +25,9 @@ const COLLECTION_OPTIONS = [
   ...COLLECTIONS.map((c) => ({ id: c.id, label: c.name })),
 ]
 
-// built once, not per-card - see getCountryMaxElevations for why
+// built once, not per-card - see getCountryMaxElevations/getCollectionsByMountainId
 const COUNTRY_MAX_ELEVATIONS = getCountryMaxElevations(MOUNTAINS)
+const COLLECTIONS_BY_MOUNTAIN = getCollectionsByMountainId(COLLECTIONS)
 
 export function ExplorePage() {
   const [filters, setFilters] = useState<MountainFilters>({
@@ -37,8 +43,6 @@ export function ExplorePage() {
   const currentPage = Math.min(page, pageCount)
   const visible = filtered.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE)
 
-  // any filter change resets to page 1 - simpler to reason about than trying
-  // to preserve page position across a filter that changes the result count
   function updateFilters(next: Partial<MountainFilters>) {
     setFilters((prev) => ({ ...prev, ...next }))
     setPage(1)
@@ -79,6 +83,7 @@ export function ExplorePage() {
             key={mountain.id}
             mountain={mountain}
             countryMaxElevation={COUNTRY_MAX_ELEVATIONS.get(mountain.country)}
+            collections={COLLECTIONS_BY_MOUNTAIN.get(mountain.id)}
           />
         ))}
       </div>

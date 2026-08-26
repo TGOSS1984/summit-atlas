@@ -1,7 +1,12 @@
 import { describe, expect, it } from 'vitest'
 import type { Mountain } from '../types/mountain'
 import type { Collection } from '../types/collection'
-import { filterMountains, getCountryMaxElevations, ALL_FILTERS } from './filterMountains'
+import {
+  filterMountains,
+  getCountryMaxElevations,
+  getCollectionsByMountainId,
+  ALL_FILTERS,
+} from './filterMountains'
 
 const MOUNTAINS: Mountain[] = [
   { id: 'a', name: 'Alpha Peak', elevation: 1000, country: 'Testland', flag: '', continent: 'Europe', range: 'Alpha Range', lat: 0, lng: 0 },
@@ -11,6 +16,7 @@ const MOUNTAINS: Mountain[] = [
 
 const COLLECTIONS: Collection[] = [
   { id: 'test-collection', name: 'Test Collection', tagline: '', colorToken: 'accent', peakIds: ['a', 'c'] },
+  { id: 'second-collection', name: 'Second Collection', tagline: '', colorToken: 'ice', peakIds: ['a'] },
 ]
 
 describe('filterMountains', () => {
@@ -52,5 +58,18 @@ describe('getCountryMaxElevations', () => {
     const result = getCountryMaxElevations(MOUNTAINS)
     expect(result.get('Testland')).toBe(3000)
     expect(result.get('Otherland')).toBe(2000)
+  })
+})
+
+describe('getCollectionsByMountainId', () => {
+  it('lists every collection a peak belongs to', () => {
+    const result = getCollectionsByMountainId(COLLECTIONS)
+    expect(result.get('a')?.map((c) => c.id).sort()).toEqual(['second-collection', 'test-collection'])
+    expect(result.get('c')?.map((c) => c.id)).toEqual(['test-collection'])
+  })
+
+  it('omits peaks that belong to nothing', () => {
+    const result = getCollectionsByMountainId(COLLECTIONS)
+    expect(result.get('b')).toBeUndefined()
   })
 })
