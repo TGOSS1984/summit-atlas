@@ -1,0 +1,177 @@
+.header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-right: 30px;
+}
+
+.flag {
+  font-size: 24px;
+}
+
+.name {
+  font-family: var(--font-display);
+  margin: 0;
+}
+
+.meta {
+  margin: 4px 0 0;
+  color: var(--text-secondary);
+  font-size: 13.5px;
+}
+
+.collectionPills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 14px;
+}
+
+.pill {
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border: 1px solid;
+  border-radius: 100px;
+}
+
+.statGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 14px;
+  margin-top: 22px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.statLabel {
+  margin: 0;
+  font-size: 11.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-tertiary);
+}
+
+.statValue {
+  margin: 0;
+  font-size: 14.5px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.description {
+  margin-top: 20px;
+  padding-top: 18px;
+  border-top: 1px solid var(--border);
+  font-size: 13.5px;
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+.description p {
+  margin: 0;
+}
+
+.logSection {
+  margin-top: 20px;
+  padding-top: 18px;
+  border-top: 1px solid var(--border);
+}
+
+.sectionTitle {
+  margin: 0 0 12px;
+  font-size: 14px;
+}
+
+.form {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.dateInput,
+.noteInput {
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--text);
+  border-radius: var(--radius-sm);
+  padding: 8px 10px;
+  font-size: 13px;
+}
+
+.dateInput {
+  flex: 0 0 auto;
+}
+
+.noteInput {
+  flex: 1 1 160px;
+}
+
+.submitButton {
+  border: none;
+  background: var(--accent);
+  color: var(--accent-ink);
+  border-radius: var(--radius-sm);
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.submitButton:hover {
+  background: var(--accent-bright);
+}
+
+.climbList {
+  list-style: none;
+  margin: 14px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.climbRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.climbDate {
+  font-weight: 600;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+
+.climbNote {
+  color: var(--text-secondary);
+  flex: 1;
+}
+
+.removeButton {
+  border: none;
+  background: none;
+  color: var(--text-tertiary);
+  font-size: 12px;
+  cursor: pointer;
+  padding: 0;
+}
+
+.removeButton:hover {
+  color: var(--red);
+}
+
+.emptyClimbs {
+  margin: 14px 0 0;
+  font-size: 13px;
+  color: var(--text-tertiary);
+}

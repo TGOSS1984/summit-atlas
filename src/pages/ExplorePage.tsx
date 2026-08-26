@@ -1,14 +1,12 @@
 import { useMemo, useState } from 'react'
 import { MOUNTAINS } from '../data/mountains'
 import { COLLECTIONS } from '../data/collections'
-import {
-  filterMountains,
-  getCountryMaxElevations,
-  getCollectionsByMountainId,
-  type MountainFilters,
-} from '../utils/filterMountains'
+import { COLLECTIONS_BY_MOUNTAIN } from '../data/collectionsByMountain'
+import { filterMountains, getCountryMaxElevations, type MountainFilters } from '../utils/filterMountains'
 import { MountainCard } from '../components/mountain/MountainCard'
 import { FilterChips } from '../components/explore/FilterChips'
+import { MountainDetailModal } from '../components/mountain/MountainDetailModal'
+import type { Mountain } from '../types/mountain'
 import styles from './ExplorePage.module.css'
 
 const PAGE_SIZE = 12
@@ -25,9 +23,7 @@ const COLLECTION_OPTIONS = [
   ...COLLECTIONS.map((c) => ({ id: c.id, label: c.name })),
 ]
 
-// built once, not per-card - see getCountryMaxElevations/getCollectionsByMountainId
 const COUNTRY_MAX_ELEVATIONS = getCountryMaxElevations(MOUNTAINS)
-const COLLECTIONS_BY_MOUNTAIN = getCollectionsByMountainId(COLLECTIONS)
 
 export function ExplorePage() {
   const [filters, setFilters] = useState<MountainFilters>({
@@ -36,6 +32,7 @@ export function ExplorePage() {
     collectionId: null,
   })
   const [page, setPage] = useState(1)
+  const [selectedMountain, setSelectedMountain] = useState<Mountain | null>(null)
 
   const filtered = useMemo(() => filterMountains(MOUNTAINS, filters, COLLECTIONS), [filters])
 
@@ -79,12 +76,17 @@ export function ExplorePage() {
 
       <div className={styles.grid}>
         {visible.map((mountain) => (
-          <MountainCard
+          <div
             key={mountain.id}
-            mountain={mountain}
-            countryMaxElevation={COUNTRY_MAX_ELEVATIONS.get(mountain.country)}
-            collections={COLLECTIONS_BY_MOUNTAIN.get(mountain.id)}
-          />
+            style={{ cursor: 'pointer' }}
+            onClick={() => setSelectedMountain(mountain)}
+          >
+            <MountainCard
+              mountain={mountain}
+              countryMaxElevation={COUNTRY_MAX_ELEVATIONS.get(mountain.country)}
+              collections={COLLECTIONS_BY_MOUNTAIN.get(mountain.id)}
+            />
+          </div>
         ))}
       </div>
 
@@ -106,6 +108,14 @@ export function ExplorePage() {
             Next
           </button>
         </div>
+      )}
+
+      {selectedMountain && (
+        <MountainDetailModal
+          mountain={selectedMountain}
+          collections={COLLECTIONS_BY_MOUNTAIN.get(selectedMountain.id) ?? []}
+          onClose={() => setSelectedMountain(null)}
+        />
       )}
     </div>
   )

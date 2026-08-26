@@ -1,13 +1,15 @@
+import { useState } from 'react'
 import { MapContainer, TileLayer, CircleMarker, Popup } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
 import { MOUNTAINS } from '../../data/mountains'
 import { TEMP_CLIMBED_IDS } from '../../data/tempClimbedIds'
+import { COLLECTIONS_BY_MOUNTAIN } from '../../data/collectionsByMountain'
 import { formatElevation } from '../../utils/units'
 import { useTheme } from '../../context/ThemeContext'
+import { MountainDetailModal } from '../mountain/MountainDetailModal'
+import type { Mountain } from '../../types/mountain'
 import styles from './WorldMap.module.css'
 
-// CARTO basemaps - free with attribution, and they ship matching light/dark
-// variants which is the whole reason they're here over stock OSM tiles
 const TILE_URLS = {
   light: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
   dark: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
@@ -16,24 +18,19 @@ const TILE_URLS = {
 const TILE_ATTRIBUTION =
   '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
 
-// Leaflet sets marker colours as SVG presentation attributes, not through the
-// DOM style cascade - var(--token) doesn't reliably resolve there, so read
-// the actual computed value off :root instead. Cheap enough at this marker
-// count, and it picks up theme changes for free since the component re-renders.
 function resolveToken(name: string): string {
   return getComputedStyle(document.documentElement).getPropertyValue(name).trim()
 }
 
 export function WorldMap() {
   const { theme } = useTheme()
+  const [selectedMountain, setSelectedMountain] = useState<Mountain | null>(null)
   const climbedColor = resolveToken('--green')
   const unclimbedColor = resolveToken('--text-tertiary')
 
   return (
     <div className={styles.mapWrapper}>
       <MapContainer center={[20, 10]} zoom={2} minZoom={2} className={styles.map} worldCopyJump>
-        {/* key={theme} forces a clean remount on toggle instead of fighting
-            Leaflet's own tile caching by swapping the url prop in place */}
         <TileLayer key={theme} url={TILE_URLS[theme]} attribution={TILE_ATTRIBUTION} />
 
         {MOUNTAINS.map((mountain) => {
@@ -56,7 +53,25 @@ export function WorldMap() {
                 </strong>
                 <br />
                 {formatElevation(mountain.elevation, 'm')} · {mountain.country}
-                {/* TODO: link into the mountain detail */}
+                <br />
+                {/* Leaflet's popup DOM sits outside our normal render tree - inline
+                    style here rather than wiring up a CSS module class for one button */}
+                <button
+                  type="button"
+                  onClick={() => setSelectedMountain(mountain)}
+                  style={{
+                    marginTop: 6,
+                    background: 'none',
+                    border: 'none',
+                    color: 'var(--accent)',
+                    textDecoration: 'underline',
+                    cursor: 'pointer',
+                    fontSize: 12,
+                    padding: 0,
+                  }}
+                >
+                  View details
+                </button>
               </Popup>
             </CircleMarker>
           )
@@ -71,6 +86,14 @@ export function WorldMap() {
           <span className={`${styles.dot} ${styles.dotUnclimbed}`} /> Unclimbed
         </span>
       </div>
+
+      {selectedMountain && (
+        <MountainDetailModal
+          mountain={selectedMountain}
+          collections={COLLECTIONS_BY_MOUNTAIN.get(selectedMountain.id) ?? []}
+          onClose={() => setSelectedMountain(null)}
+        />
+      )}
     </div>
   )
 }
