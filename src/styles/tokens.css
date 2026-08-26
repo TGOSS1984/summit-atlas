@@ -1,0 +1,60 @@
+/* Summit Atlas design tokens.
+   Light theme (Summit Light) lives on bare :root since it's the default.
+   Dark theme (Deep Vintage) overrides the same names under [data-theme="dark"].
+   Nothing outside this file should ever hardcode a colour, radius, or font —
+   that's the whole point of doing it this way. */
+
+:root {
+  --bg: #F7F5F1;
+  --bg-elevated: #F0EDE6;
+  --card: #FFFFFF;
+  --card-hover: #F7F4EE;
+  --border: rgba(30, 26, 20, 0.09);
+  --border-strong: rgba(30, 26, 20, 0.16);
+  --text: #211D18;
+  --text-secondary: #5B5348;
+  --text-tertiary: #8B8272;
+
+  --accent: #D9633B;
+  --accent-bright: #E67D57;
+  --accent-soft: rgba(217, 99, 59, 0.11);
+  --accent-ink: #FFF8F4;
+
+  --green: #2F9E6E;
+  --green-soft: rgba(47, 158, 110, 0.12);
+  --ice: #4E8FBF;
+  --gold: #B8842E;
+  --red: #C94F5C;
+
+  --radius: 16px;
+  --radius-sm: 11px;
+  --shadow: 0 12px 40px rgba(30, 26, 20, 0.10);
+
+  --font-display: 'Fraunces', Georgia, serif;
+  --font-ui: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+:root[data-theme='dark'] {
+  --bg: #13232B;
+  --bg-elevated: #172B34;
+  --card: #1D3641;
+  --card-hover: #24424F;
+  --border: rgba(144, 174, 173, 0.10);
+  --border-strong: rgba(144, 174, 173, 0.18);
+  --text: #F2ECE0;
+  --text-secondary: #A9BFC0;
+  --text-tertiary: #6C8687;
+
+  --accent: #E64833;
+  --accent-bright: #F06A50;
+  --accent-soft: rgba(230, 72, 51, 0.14);
+  --accent-ink: #2B0A04;
+
+  --green: #6FAE94;
+  --green-soft: rgba(111, 174, 148, 0.14);
+  --ice: #90AEAD;
+  --gold: #E0B36A;
+  --red: #C9573F;
+
+  --shadow: 0 12px 40px rgba(2, 4, 8, 0.5);
+}
