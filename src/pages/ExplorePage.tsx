@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import { MOUNTAINS } from '../data/mountains'
 import { COLLECTIONS } from '../data/collections'
 import { COLLECTIONS_BY_MOUNTAIN } from '../data/collectionsByMountain'
+import { useClimbs } from '../context/ClimbsContext'
 import { filterMountains, getCountryMaxElevations, type MountainFilters } from '../utils/filterMountains'
 import { MountainCard } from '../components/mountain/MountainCard'
 import { FilterChips } from '../components/explore/FilterChips'
@@ -26,6 +27,7 @@ const COLLECTION_OPTIONS = [
 const COUNTRY_MAX_ELEVATIONS = getCountryMaxElevations(MOUNTAINS)
 
 export function ExplorePage() {
+  const { climbedIds } = useClimbs()
   const [filters, setFilters] = useState<MountainFilters>({
     search: '',
     continent: null,
@@ -85,6 +87,7 @@ export function ExplorePage() {
               mountain={mountain}
               countryMaxElevation={COUNTRY_MAX_ELEVATIONS.get(mountain.country)}
               collections={COLLECTIONS_BY_MOUNTAIN.get(mountain.id)}
+              climbed={climbedIds.has(mountain.id)}
             />
           </div>
         ))}

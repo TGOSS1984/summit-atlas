@@ -1,7 +1,7 @@
 import { useState, type FormEvent } from 'react'
 import type { Mountain } from '../../types/mountain'
 import type { Collection } from '../../types/collection'
-import type { ClimbRecord } from '../../types/climb'
+import { useClimbs } from '../../context/ClimbsContext'
 import { formatElevation } from '../../utils/units'
 import { Modal } from '../common/Modal'
 import styles from './MountainDetailModal.module.css'
@@ -13,25 +13,17 @@ interface MountainDetailModalProps {
 }
 
 export function MountainDetailModal({ mountain, collections, onClose }: MountainDetailModalProps) {
-  // local-only for now - closing the modal loses anything logged here.
-  // Doesn't read from TEMP_CLIMBED_IDS either since that's just a flat set
-  // of ids with no per-climb date/note to seed from. Real store: commit 12.
-  const [climbs, setClimbs] = useState<ClimbRecord[]>([])
+  const { getClimbsFor, logClimb, removeClimb } = useClimbs()
+  const climbs = getClimbsFor(mountain.id)
   const [date, setDate] = useState('')
   const [note, setNote] = useState('')
 
   function handleSubmit(e: FormEvent) {
     e.preventDefault()
     if (!date) return
-    setClimbs((prev) =>
-      [...prev, { date, note: note.trim() || undefined }].sort((a, b) => b.date.localeCompare(a.date)),
-    )
+    logClimb(mountain.id, { date, note: note.trim() || undefined })
     setDate('')
     setNote('')
-  }
-
-  function removeClimb(index: number) {
-    setClimbs((prev) => prev.filter((_, i) => i !== index))
   }
 
   return (
@@ -110,7 +102,7 @@ export function MountainDetailModal({ mountain, collections, onClose }: Mountain
                 <button
                   type="button"
                   className={styles.removeButton}
-                  onClick={() => removeClimb(index)}
+                  onClick={() => removeClimb(mountain.id, index)}
                   aria-label="Remove this climb"
                 >
                   Remove
@@ -119,7 +111,7 @@ export function MountainDetailModal({ mountain, collections, onClose }: Mountain
             ))}
           </ul>
         ) : (
-          <p className={styles.emptyClimbs}>Nothing logged yet this session.</p>
+          <p className={styles.emptyClimbs}>No ascents logged yet.</p>
         )}
       </div>
     </Modal>

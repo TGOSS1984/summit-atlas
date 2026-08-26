@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { MapContainer, TileLayer, CircleMarker, Popup } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
 import { MOUNTAINS } from '../../data/mountains'
-import { TEMP_CLIMBED_IDS } from '../../data/tempClimbedIds'
+import { useClimbs } from '../../context/ClimbsContext'
 import { COLLECTIONS_BY_MOUNTAIN } from '../../data/collectionsByMountain'
 import { formatElevation } from '../../utils/units'
 import { useTheme } from '../../context/ThemeContext'
@@ -24,6 +24,7 @@ function resolveToken(name: string): string {
 
 export function WorldMap() {
   const { theme } = useTheme()
+  const { climbedIds } = useClimbs()
   const [selectedMountain, setSelectedMountain] = useState<Mountain | null>(null)
   const climbedColor = resolveToken('--green')
   const unclimbedColor = resolveToken('--text-tertiary')
@@ -34,7 +35,7 @@ export function WorldMap() {
         <TileLayer key={theme} url={TILE_URLS[theme]} attribution={TILE_ATTRIBUTION} />
 
         {MOUNTAINS.map((mountain) => {
-          const climbed = TEMP_CLIMBED_IDS.has(mountain.id)
+          const climbed = climbedIds.has(mountain.id)
           return (
             <CircleMarker
               key={mountain.id}
@@ -54,8 +55,6 @@ export function WorldMap() {
                 <br />
                 {formatElevation(mountain.elevation, 'm')} · {mountain.country}
                 <br />
-                {/* Leaflet's popup DOM sits outside our normal render tree - inline
-                    style here rather than wiring up a CSS module class for one button */}
                 <button
                   type="button"
                   onClick={() => setSelectedMountain(mountain)}
