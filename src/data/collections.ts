@@ -1,9 +1,10 @@
 import type { Collection } from '../types/collection'
 
-// only fleshing out enough peakIds to prove the shape works - the 8000ers
-// list is now complete since commit 14 added the other 11. alpine-classics
-// stays a curated pick rather than a fixed real-world list. not touching a
-// UK collection here, that's its own commit once ben-nevis has company
+// eight-thousanders list is complete since commit 14. alpine-classics stays
+// a curated pick rather than a fixed real-world list. the 5 UK collections
+// below are curated subsets of much bigger real lists (214 Wainwrights,
+// ~282 Munros etc.) rather than every single entry - see mountains.ts for
+// the reasoning
 export const COLLECTIONS: Collection[] = [
   {
     id: 'seven-summits',
@@ -48,5 +49,107 @@ export const COLLECTIONS: Collection[] = [
     tagline: 'Iconic peaks of the European Alps',
     colorToken: 'green',
     peakIds: ['mont-blanc', 'matterhorn', 'eiger'],
+  },
+  {
+    id: 'wainwrights',
+    name: 'Wainwrights',
+    tagline: "Alfred Wainwright's 214 fells of the Lake District",
+    colorToken: 'gold',
+    peakIds: [
+      'scafell-pike',
+      'sca-fell',
+      'helvellyn',
+      'skiddaw',
+      'great-gable',
+      'blencathra',
+      'catbells',
+      'haystacks',
+      'pillar',
+      'bowfell',
+      'fairfield',
+      'high-street',
+      'old-man-of-coniston',
+      'crinkle-crags',
+      'glaramara',
+      'red-pike',
+      'grasmoor',
+      'harrison-stickle',
+    ],
+  },
+  {
+    id: 'scottish-munros',
+    name: 'Scottish Munros',
+    tagline: "Scotland's mountains over 3,000ft",
+    colorToken: 'ice',
+    peakIds: [
+      'ben-nevis',
+      'ben-macdui',
+      'braeriach',
+      'cairn-gorm',
+      'buachaille-etive-mor',
+      'an-teallach',
+      'liathach',
+      'ben-lomond',
+      'schiehallion',
+      'ben-more-mull',
+      'bidean-nam-bian',
+      'carn-mor-dearg',
+      'ben-lawers',
+      'beinn-eighe',
+      'cairn-toul',
+      'sgurr-alasdair',
+      'sgurr-nan-gillean',
+      'ben-cruachan',
+    ],
+  },
+  {
+    id: 'welsh-mountains',
+    name: 'Welsh Mountains',
+    tagline: 'The high peaks of Snowdonia and beyond',
+    colorToken: 'green',
+    peakIds: [
+      'snowdon',
+      'cadair-idris',
+      'tryfan',
+      'pen-y-fan',
+      'glyder-fawr',
+      'glyder-fach',
+      'carnedd-llewelyn',
+      'cnicht',
+      'y-garn',
+      'aran-fawddwy',
+    ],
+  },
+  {
+    id: 'peak-district',
+    name: 'Peak District',
+    tagline: 'The moorland peaks of the Peak District',
+    colorToken: 'red',
+    peakIds: [
+      'kinder-scout',
+      'bleaklow',
+      'mam-tor',
+      'shining-tor',
+      'win-hill',
+      'higger-tor',
+      'lose-hill',
+      'shutlingsloe',
+    ],
+  },
+  {
+    id: 'yorkshire-dales',
+    name: 'Yorkshire Dales',
+    tagline: 'Fells and moors of the Yorkshire Dales, including the Three Peaks',
+    colorToken: 'accent',
+    peakIds: [
+      'whernside',
+      'ingleborough',
+      'pen-y-ghent',
+      'great-shunner-fell',
+      'buckden-pike',
+      'fountains-fell',
+      'wild-boar-fell',
+      'the-calf',
+    ],
   },
 ]
