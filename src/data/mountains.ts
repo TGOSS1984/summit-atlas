@@ -1113,7 +1113,7 @@ export const MOUNTAINS: Mountain[] = [
     lat: -18.1086,
     lng: -68.8825,
     firstAscent: 1939,
-    wikipediaTitle: 'Sajama (mountain)',
+    wikipediaTitle: 'Sajama',
   },
   {
     id: 'illimani',

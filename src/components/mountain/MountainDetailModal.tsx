@@ -4,6 +4,7 @@ import type { Collection } from '../../types/collection'
 import { useClimbs } from '../../context/ClimbsContext'
 import { useUnit } from '../../context/UnitContext'
 import { formatElevation } from '../../utils/units'
+import { getWikiExtract } from '../../utils/wiki'
 import { Modal } from '../common/Modal'
 import styles from './MountainDetailModal.module.css'
 
@@ -17,6 +18,7 @@ export function MountainDetailModal({ mountain, collections, onClose }: Mountain
   const { getClimbsFor, logClimb, removeClimb } = useClimbs()
   const { unit } = useUnit()
   const climbs = getClimbsFor(mountain.id)
+  const wiki = getWikiExtract(mountain.id)
   const [date, setDate] = useState('')
   const [note, setNote] = useState('')
 
@@ -68,8 +70,18 @@ export function MountainDetailModal({ mountain, collections, onClose }: Mountain
       </div>
 
       <div className={styles.description}>
-        {/* TODO: replace with the real Wikipedia extract once commit 17's pipeline exists */}
-        <p>No summary yet — this pulls from Wikipedia once the content pipeline (commit 17) is wired up.</p>
+        {wiki ? (
+          <>
+            <p>{wiki.extract}</p>
+            <a href={wiki.url} target="_blank" rel="noreferrer" className={styles.wikiLink}>
+              Read more on Wikipedia
+            </a>
+          </>
+        ) : (
+          // cache miss - either the fetch script hasn't run yet, or this
+          // peak needs a wikipediaTitle override to resolve correctly
+          <p className={styles.noDescription}>No summary cached yet.</p>
+        )}
       </div>
 
       <div className={styles.logSection}>
