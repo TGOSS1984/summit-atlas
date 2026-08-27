@@ -2,9 +2,8 @@ import type { ClimbsState } from '../utils/climbs'
 import { isValidClimbsState } from '../utils/climbs'
 
 const STORAGE_KEY = 'summit-atlas-climbs'
+const DEMO_FLAG_KEY = 'summit-atlas-is-demo'
 
-// wrapped in try/catch throughout - localStorage throws in Safari private
-// browsing and can hit quota limits, don't want either to take the app down
 export function loadClimbs(): ClimbsState {
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
@@ -20,8 +19,23 @@ export function saveClimbs(state: ClimbsState): void {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
   } catch {
-    // silently drop it - a failed save shouldn't crash the UI, worst case
-    // the latest climb doesn't survive a reload
+    // silently drop it - a failed save shouldn't crash the UI
+  }
+}
+
+export function loadIsDemo(): boolean {
+  try {
+    return localStorage.getItem(DEMO_FLAG_KEY) === 'true'
+  } catch {
+    return false
+  }
+}
+
+export function saveIsDemo(isDemo: boolean): void {
+  try {
+    localStorage.setItem(DEMO_FLAG_KEY, String(isDemo))
+  } catch {
+    // same reasoning as saveClimbs - not worth surfacing a failed write here
   }
 }
 

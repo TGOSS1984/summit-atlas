@@ -1,6 +1,7 @@
 import type { Collection } from '../../types/collection'
 import type { Mountain } from '../../types/mountain'
 import { formatElevation } from '../../utils/units'
+import { useUnit } from '../../context/UnitContext'
 import styles from './CollectionDetail.module.css'
 
 interface CollectionDetailProps {
@@ -10,12 +11,12 @@ interface CollectionDetailProps {
 }
 
 export function CollectionDetail({ collection, mountains, climbedIds }: CollectionDetailProps) {
+  const { unit } = useUnit()
   const missingCount = collection.peakIds.length - mountains.length
 
   return (
     <div className={styles.panel}>
       <h2 className={styles.title}>{collection.name}</h2>
-      {/* TODO: swap for the real Wikipedia-sourced summary once commit 18's pipeline exists */}
       <p className={styles.tagline}>{collection.tagline}</p>
 
       <ul className={styles.list}>
@@ -26,7 +27,7 @@ export function CollectionDetail({ collection, mountains, climbedIds }: Collecti
               <span className={styles.flag}>{mountain.flag}</span>
               <span className={styles.name}>{mountain.name}</span>
               <span className={styles.country}>{mountain.country}</span>
-              <span className={styles.elevation}>{formatElevation(mountain.elevation, 'm')}</span>
+              <span className={styles.elevation}>{formatElevation(mountain.elevation, unit)}</span>
               <span className={climbed ? styles.badgeClimbed : styles.badge}>
                 {climbed ? '✓ Climbed' : 'Not yet'}
               </span>

@@ -1,6 +1,7 @@
 import { MOUNTAINS } from '../data/mountains'
 import { COLLECTIONS } from '../data/collections'
 import { useClimbs } from '../context/ClimbsContext'
+import { useUnit } from '../context/UnitContext'
 import { formatElevation } from '../utils/units'
 import {
   getCollectionProgress,
@@ -12,10 +13,12 @@ import {
 import { StatCard } from '../components/dashboard/StatCard'
 import { CollectionRing } from '../components/dashboard/CollectionRing'
 import { DataControls } from '../components/dashboard/DataControls'
+import { DemoDataBanner } from '../components/dashboard/DemoDataBanner'
 import styles from './DashboardPage.module.css'
 
 export function DashboardPage() {
   const { climbedIds } = useClimbs()
+  const { unit } = useUnit()
 
   const highest = getHighestClimbed(MOUNTAINS, climbedIds)
   const totalElevation = getTotalElevationClimbed(MOUNTAINS, climbedIds)
@@ -26,6 +29,8 @@ export function DashboardPage() {
     <div>
       <h1>Dashboard</h1>
 
+      <DemoDataBanner />
+
       <div className={styles.statGrid}>
         <StatCard
           label="Peaks climbed"
@@ -34,10 +39,10 @@ export function DashboardPage() {
         />
         <StatCard
           label="Highest climbed"
-          value={highest ? formatElevation(highest.elevation, 'm') : '—'}
+          value={highest ? formatElevation(highest.elevation, unit) : '—'}
           sublabel={highest?.name ?? 'nothing logged yet'}
         />
-        <StatCard label="Combined elevation" value={formatElevation(totalElevation, 'm')} />
+        <StatCard label="Combined elevation" value={formatElevation(totalElevation, unit)} />
         <StatCard label="Countries" value={countries} />
         <StatCard label="Continents" value={continents} sublabel="of 7" />
       </div>

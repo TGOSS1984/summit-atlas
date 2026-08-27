@@ -6,30 +6,33 @@ import {
   getClimbedIds,
   type ClimbsState,
 } from '../utils/climbs'
-import { loadClimbs, saveClimbs } from '../store/climbsStore'
+import { loadClimbs, saveClimbs, loadIsDemo, saveIsDemo } from '../store/climbsStore'
+import { DEMO_CLIMBS } from '../data/demoClimbs'
 
 interface ClimbsContextValue {
   climbs: ClimbsState
   climbedIds: Set<string>
+  isDemoData: boolean
   getClimbsFor: (mountainId: string) => ClimbRecord[]
   logClimb: (mountainId: string, climb: ClimbRecord) => void
   removeClimb: (mountainId: string, index: number) => void
-  // trusts its input is already validated - only caller right now is
-  // DataControls, which runs it through parseImportedFile first
   replaceAll: (state: ClimbsState) => void
+  loadDemoData: () => void
 }
 
 const ClimbsContext = createContext<ClimbsContextValue | null>(null)
 
 export function ClimbsProvider({ children }: { children: ReactNode }) {
-  // lazy initializer so loadClimbs() only ever runs once, not on every render
   const [climbs, setClimbs] = useState<ClimbsState>(() => loadClimbs())
+  const [isDemoData, setIsDemoData] = useState<boolean>(() => loadIsDemo())
 
-  // writes through on every change rather than only on unmount - a closed
-  // tab shouldn't lose the last thing logged
   useEffect(() => {
     saveClimbs(climbs)
   }, [climbs])
+
+  useEffect(() => {
+    saveIsDemo(isDemoData)
+  }, [isDemoData])
 
   const climbedIds = useMemo(() => getClimbedIds(climbs), [climbs])
 
@@ -37,13 +40,28 @@ export function ClimbsProvider({ children }: { children: ReactNode }) {
     () => ({
       climbs,
       climbedIds,
+      isDemoData,
       getClimbsFor: (mountainId) => climbs[mountainId] ?? [],
-      logClimb: (mountainId, climb) => setClimbs((prev) => addClimb(prev, mountainId, climb)),
-      removeClimb: (mountainId, index) =>
-        setClimbs((prev) => removeClimbFromState(prev, mountainId, index)),
-      replaceAll: (state) => setClimbs(state),
+      // any real edit (log, remove, import) clears the demo flag - once
+      // someone's touched the data it's not "just sample data" any more
+      logClimb: (mountainId, climb) => {
+        setClimbs((prev) => addClimb(prev, mountainId, climb))
+        setIsDemoData(false)
+      },
+      removeClimb: (mountainId, index) => {
+        setClimbs((prev) => removeClimbFromState(prev, mountainId, index))
+        setIsDemoData(false)
+      },
+      replaceAll: (state) => {
+        setClimbs(state)
+        setIsDemoData(false)
+      },
+      loadDemoData: () => {
+        setClimbs(DEMO_CLIMBS)
+        setIsDemoData(true)
+      },
     }),
-    [climbs, climbedIds],
+    [climbs, climbedIds, isDemoData],
   )
 
   return <ClimbsContext.Provider value={value}>{children}</ClimbsContext.Provider>

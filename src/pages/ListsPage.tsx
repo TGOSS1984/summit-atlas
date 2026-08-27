@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { COLLECTIONS } from '../data/collections'
 import { MOUNTAINS } from '../data/mountains'
-import { TEMP_CLIMBED_IDS } from '../data/tempClimbedIds'
+import { useClimbs } from '../context/ClimbsContext'
 import { getCollectionProgress } from '../utils/dashboardStats'
 import { getCollectionMountains } from '../utils/collectionMountains'
 import { CollectionListCard } from '../components/lists/CollectionListCard'
@@ -9,6 +9,7 @@ import { CollectionDetail } from '../components/lists/CollectionDetail'
 import styles from './ListsPage.module.css'
 
 export function ListsPage() {
+  const { climbedIds } = useClimbs()
   const [selectedId, setSelectedId] = useState(COLLECTIONS[0]?.id ?? null)
   const selected = COLLECTIONS.find((c) => c.id === selectedId) ?? COLLECTIONS[0]
 
@@ -18,7 +19,7 @@ export function ListsPage() {
 
       <div className={styles.grid}>
         {COLLECTIONS.map((collection) => {
-          const { climbed, total } = getCollectionProgress(collection, TEMP_CLIMBED_IDS)
+          const { climbed, total } = getCollectionProgress(collection, climbedIds)
           return (
             <CollectionListCard
               key={collection.id}
@@ -37,7 +38,7 @@ export function ListsPage() {
           <CollectionDetail
             collection={selected}
             mountains={getCollectionMountains(selected, MOUNTAINS)}
-            climbedIds={TEMP_CLIMBED_IDS}
+            climbedIds={climbedIds}
           />
         </div>
       )}

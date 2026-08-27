@@ -1,7 +1,7 @@
 import { NavLink, Outlet } from 'react-router-dom'
 import { useTheme } from '../../context/ThemeContext'
+import { useUnit } from '../../context/UnitContext'
 import styles from './Layout.module.css'
-
 
 // import to follow
 const NAV_ITEMS = [
@@ -24,6 +24,7 @@ export function Layout() {
 
 function Sidebar() {
   const { theme, toggleTheme } = useTheme()
+  const { unit, toggleUnit } = useUnit()
 
   return (
     <nav className={styles.sidebar}>
@@ -45,10 +46,13 @@ function Sidebar() {
         ))}
       </div>
 
-      {/* just proving the toggle still works from here — proper settings
-          area (units, export/import) comes later */}
+      {/* theme + unit toggles live here for now - split into a dedicated
+          settings area later if the sidebar gets crowded */}
       <button className={styles.themeToggle} onClick={toggleTheme}>
         switch to {theme === 'dark' ? 'light' : 'dark'}
+      </button>
+      <button className={styles.themeToggle} onClick={toggleUnit}>
+        switch to {unit === 'm' ? 'ft' : 'm'}
       </button>
     </nav>
   )

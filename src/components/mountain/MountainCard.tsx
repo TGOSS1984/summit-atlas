@@ -2,16 +2,13 @@ import type { Mountain } from '../../types/mountain'
 import type { Collection } from '../../types/collection'
 import { formatElevation } from '../../utils/units'
 import { buildRidgeSvg } from '../../utils/ridgeSvg'
+import { useUnit } from '../../context/UnitContext'
 import styles from './MountainCard.module.css'
 
 interface MountainCardProps {
   mountain: Mountain
-  // caller's job to work this out from the full dataset (see getCountryMaxElevations)
   countryMaxElevation?: number
-  // collections this specific mountain belongs to (see getCollectionsByMountainId) -
-  // card stays dumb about where that comes from, just draws a dot per entry
   collections?: Collection[]
-  // defaults false until commit 12's persisted store exists
   climbed?: boolean
 }
 
@@ -21,6 +18,7 @@ export function MountainCard({
   collections = [],
   climbed = false,
 }: MountainCardProps) {
+  const { unit } = useUnit()
   const ridge = buildRidgeSvg(mountain, { countryMaxElevation })
   const ridgeClassName = climbed ? styles.ridgeClimbed : styles.ridge
 
@@ -58,8 +56,7 @@ export function MountainCard({
           {mountain.range} · {mountain.country}
         </p>
         <div className={styles.footer}>
-          {/* hardcoded to metres for now - swaps to read the unit toggle in commit 13 */}
-          <p className={styles.elevation}>{formatElevation(mountain.elevation, 'm')}</p>
+          <p className={styles.elevation}>{formatElevation(mountain.elevation, unit)}</p>
           {collections.length > 0 && (
             <div className={styles.dots}>
               {collections.map((collection) => (

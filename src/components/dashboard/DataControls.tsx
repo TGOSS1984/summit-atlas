@@ -4,7 +4,7 @@ import { exportClimbsFile, parseImportedFile } from '../../store/climbsStore'
 import styles from './DataControls.module.css'
 
 export function DataControls() {
-  const { climbs, replaceAll } = useClimbs()
+  const { climbs, climbedIds, replaceAll, loadDemoData } = useClimbs()
   const [message, setMessage] = useState<string | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
@@ -18,9 +18,18 @@ export function DataControls() {
     } catch (err) {
       setMessage(err instanceof Error ? err.message : 'Import failed.')
     } finally {
-      // reset so picking the same filename twice in a row still fires onChange
       e.target.value = ''
     }
+  }
+
+  function handleLoadDemoData() {
+    // only bother asking if there's real data to lose - window.confirm is a
+    // blunt tool, fine for now, could swap for our own Modal later if it feels cheap
+    const hasRealData = climbedIds.size > 0
+    if (hasRealData && !window.confirm('This replaces your current climb data with sample data. Continue?')) {
+      return
+    }
+    loadDemoData()
   }
 
   return (
@@ -30,6 +39,9 @@ export function DataControls() {
       </button>
       <button type="button" className={styles.button} onClick={() => fileInputRef.current?.click()}>
         Import data
+      </button>
+      <button type="button" className={styles.button} onClick={handleLoadDemoData}>
+        Load demo data
       </button>
       <input
         ref={fileInputRef}

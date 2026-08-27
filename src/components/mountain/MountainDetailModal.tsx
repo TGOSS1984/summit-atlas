@@ -2,6 +2,7 @@ import { useState, type FormEvent } from 'react'
 import type { Mountain } from '../../types/mountain'
 import type { Collection } from '../../types/collection'
 import { useClimbs } from '../../context/ClimbsContext'
+import { useUnit } from '../../context/UnitContext'
 import { formatElevation } from '../../utils/units'
 import { Modal } from '../common/Modal'
 import styles from './MountainDetailModal.module.css'
@@ -14,6 +15,7 @@ interface MountainDetailModalProps {
 
 export function MountainDetailModal({ mountain, collections, onClose }: MountainDetailModalProps) {
   const { getClimbsFor, logClimb, removeClimb } = useClimbs()
+  const { unit } = useUnit()
   const climbs = getClimbsFor(mountain.id)
   const [date, setDate] = useState('')
   const [note, setNote] = useState('')
@@ -54,11 +56,10 @@ export function MountainDetailModal({ mountain, collections, onClose }: Mountain
       )}
 
       <div className={styles.statGrid}>
-        {/* hardcoded to metres for now, same as MountainCard - swaps in commit 13 */}
-        <Stat label="Elevation" value={formatElevation(mountain.elevation, 'm')} />
+        <Stat label="Elevation" value={formatElevation(mountain.elevation, unit)} />
         <Stat
           label="Prominence"
-          value={mountain.prominence ? formatElevation(mountain.prominence, 'm') : '—'}
+          value={mountain.prominence ? formatElevation(mountain.prominence, unit) : '—'}
         />
         <Stat label="Continent" value={mountain.continent} />
         <Stat label="Range" value={mountain.range} />

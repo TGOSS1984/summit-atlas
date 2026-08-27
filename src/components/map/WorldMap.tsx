@@ -3,6 +3,7 @@ import { MapContainer, TileLayer, CircleMarker, Popup } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
 import { MOUNTAINS } from '../../data/mountains'
 import { useClimbs } from '../../context/ClimbsContext'
+import { useUnit } from '../../context/UnitContext'
 import { COLLECTIONS_BY_MOUNTAIN } from '../../data/collectionsByMountain'
 import { formatElevation } from '../../utils/units'
 import { useTheme } from '../../context/ThemeContext'
@@ -25,6 +26,7 @@ function resolveToken(name: string): string {
 export function WorldMap() {
   const { theme } = useTheme()
   const { climbedIds } = useClimbs()
+  const { unit } = useUnit()
   const [selectedMountain, setSelectedMountain] = useState<Mountain | null>(null)
   const climbedColor = resolveToken('--green')
   const unclimbedColor = resolveToken('--text-tertiary')
@@ -53,7 +55,7 @@ export function WorldMap() {
                   {mountain.flag} {mountain.name}
                 </strong>
                 <br />
-                {formatElevation(mountain.elevation, 'm')} · {mountain.country}
+                {formatElevation(mountain.elevation, unit)} · {mountain.country}
                 <br />
                 <button
                   type="button"
