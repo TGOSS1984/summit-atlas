@@ -29,7 +29,10 @@ function Sidebar() {
 
   return (
     <nav className={styles.sidebar}>
-      <div className={styles.brand}>Summit Atlas</div>
+      <div className={styles.brand}>
+        <SummitPinIcon className={styles.brandMark} />
+        <span>Summit Atlas</span>
+      </div>
 
       <div className={styles.navItems}>
         {NAV_ITEMS.map(({ to, label, icon: Icon, end }) => (
@@ -70,7 +73,10 @@ function MobileTopBar() {
 
   return (
     <div className={styles.mobileTopBar}>
-      <span className={styles.mobileBrand}>Summit Atlas</span>
+      <span className={styles.mobileBrand}>
+        <SummitPinIcon className={styles.mobileBrandMark} />
+        Summit Atlas
+      </span>
       <div className={styles.mobileToggles}>
         <button className={styles.mobileToggle} onClick={toggleTheme}>
           {theme === 'dark' ? 'light' : 'dark'}
@@ -102,6 +108,20 @@ function TabBar() {
         </NavLink>
       ))}
     </nav>
+  )
+}
+
+// the Summit Pin mark from the palette lab - a peak with a flagged pin at
+// the apex, echoing the "log a climb" action. same shape as the favicon,
+// just currentColor here instead of a fixed badge so it inherits whatever
+// this container's already using for its accent
+function SummitPinIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 22 22" fill="none" className={className}>
+      <path d="M2 18 L8 7 L14 18 Z" fill="currentColor" opacity="0.9" />
+      <line x1="8" y1="7" x2="8" y2="2.4" stroke="currentColor" strokeWidth="1.4" />
+      <path d="M8 2.4 L13 4 L8 5.6 Z" fill="currentColor" />
+    </svg>
   )
 }
 

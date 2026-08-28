@@ -5,6 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Summit Atlas</title>
 
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+    <!-- matches the sidebar's own --bg-elevated per theme, so the browser
+         chrome doesn't clash with whichever theme is active. this only
+         follows the OS scheme, not a manual in-app toggle - ThemeContext
+         would need to update this tag itself to track that too, not doing
+         that here since this commit's just the static assets -->
+    <meta name="theme-color" content="#F0EDE6" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#172B34" media="(prefers-color-scheme: dark)" />
+
     <!-- set the theme attribute before anything paints, so there's no
          flash of the wrong theme while React boots up -->
     <script>
