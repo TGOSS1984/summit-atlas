@@ -321,4 +321,20 @@ export const COLLECTIONS: Collection[] = [
       'drumaldrace', 'birks-fell', 'calf-top',
     ],
   },
+    {
+    id: 'ireland-highest',
+    name: "Ireland's Highest",
+    tagline: 'The 30 tallest peaks on the island of Ireland',
+    colorToken: 'ice',
+    peakIds: [
+      'carrauntoohil', 'beenkeragh', 'caher', 'cnoc-na-peiste',
+      'caher-west-top', 'maolan-bui', 'na-cnamha', 'cnoc-an-chuillinn',
+      'brandon-mountain', 'the-big-gun', 'cruach-mhor', 'lugnaquilla',
+      'cnoc-an-chuillinn-east-top', 'galtymore', 'sliabh-a-choimin', 'knockbrinnea',
+      'stumpa-barr-na-habhann', 'baurtregaum', 'slieve-donard', 'skregmore',
+      'mullaghcleevaun', 'knockbrinnea-east-top', 'cnoc-na-toinne', 'brandon-far-north-top',
+      'brandon-peak', 'mangerton-mountain', 'caherconree', 'purple-mountain',
+      'lyracappul', 'beenoskee',
+    ],
+  },
 ]
