@@ -1,0 +1,44 @@
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 100px 1fr 24px;
+  align-items: center;
+  gap: 10px;
+}
+
+.label {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.track {
+  height: 8px;
+  border-radius: 4px;
+  background: var(--border);
+  overflow: hidden;
+}
+
+/* --ice for this one rather than --accent - gives it its own identity next
+   to the accent-coloured bar chart above, and "ice" reads well for altitude */
+.fill {
+  height: 100%;
+  border-radius: 4px;
+  background: var(--ice);
+  transition: width 0.3s ease;
+}
+
+.count {
+  text-align: right;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text);
+}

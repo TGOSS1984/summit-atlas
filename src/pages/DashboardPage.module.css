@@ -1,6 +1,7 @@
 .statGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  grid-template-columns: 1.35fr 1fr 1fr;
+  grid-auto-rows: minmax(96px, auto);
   gap: 16px;
   margin-top: 24px;
 }
@@ -16,6 +17,20 @@
   margin-top: 20px;
 }
 
+/* all-climbs timeline on the left, per-year chart + altitude bands stacked
+   on the right - same two-column shape peakbook uses for this part of the
+   dashboard, matched by request (see project notes) */
+.dashColumns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 28px;
+  align-items: start;
+}
+
+.dashColumns > div {
+  min-width: 0;
+}
+
 @media (max-width: 760px) {
   .statGrid {
     grid-template-columns: 1fr 1fr;
@@ -28,5 +43,10 @@
 
   .ringGrid {
     gap: 18px;
+  }
+
+  .dashColumns {
+    grid-template-columns: 1fr;
+    gap: 20px;
   }
 }

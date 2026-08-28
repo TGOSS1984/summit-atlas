@@ -26,3 +26,47 @@
   font-size: 12.5px;
   color: var(--text-tertiary);
 }
+
+/* the one hero stat - taller card (spans 2 grid rows on desktop, see
+   DashboardPage.module.css), tinted accent background, topo texture
+   bleeding off the top-right corner. grid-row lives here rather than on a
+   wrapper in DashboardPage since this is the only card that needs it */
+.featured {
+  position: relative;
+  overflow: hidden;
+  grid-row: span 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 22px 24px;
+  background: linear-gradient(165deg, var(--accent-soft), transparent 60%), var(--card);
+  border-color: var(--accent-soft);
+}
+
+.texture {
+  position: absolute;
+  top: -70px;
+  right: -70px;
+  width: 220px;
+  height: 220px;
+  color: var(--accent);
+  opacity: 0.1;
+  pointer-events: none;
+}
+
+.valueFeatured {
+  font-size: 52px;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+@media (max-width: 760px) {
+  .featured {
+    grid-row: span 1;
+    grid-column: 1 / -1;
+  }
+
+  .valueFeatured {
+    font-size: 44px;
+  }
+}

@@ -11,15 +11,20 @@ import {
   getCountriesClimbedCount,
   getHighestClimbed,
   getTotalElevationClimbed,
+  getAllAscents,
+  getEverestMultiple,
 } from '../utils/dashboardStats'
 import { StatCard } from '../components/dashboard/StatCard'
 import { CollectionRing } from '../components/dashboard/CollectionRing'
+import { ClimbsPerYearChart } from '../components/dashboard/ClimbsPerYearChart'
+import { AltitudeBands } from '../components/dashboard/AltitudeBands'
+import { ClimbsTimeline } from '../components/dashboard/ClimbsTimeline'
 import { DataControls } from '../components/dashboard/DataControls'
 import { DemoDataBanner } from '../components/dashboard/DemoDataBanner'
 import styles from './DashboardPage.module.css'
 
 export function DashboardPage() {
-  const { climbedIds } = useClimbs()
+  const { climbs, climbedIds } = useClimbs()
   const { unit } = useUnit()
   const { customPeaks } = useCustomPeaks()
 
@@ -32,6 +37,15 @@ export function DashboardPage() {
   const countries = getCountriesClimbedCount(allMountains, climbedIds)
   const continents = getContinentsClimbedCount(allMountains, climbedIds)
 
+  // one flattened, newest-first ascent list feeds both the per-year chart
+  // and the all-climbs timeline below, so it's only built once per render
+  const ascents = useMemo(() => getAllAscents(allMountains, climbs), [allMountains, climbs])
+
+  const heroSublabel =
+    climbedIds.size === 0
+      ? 'log a climb to see how you stack up against Everest'
+      : `${getEverestMultiple(totalElevation).toFixed(1)}× the height of Everest, stacked end to end`
+
   return (
     <div>
       <h1>Dashboard</h1>
@@ -39,11 +53,7 @@ export function DashboardPage() {
       <DemoDataBanner />
 
       <div className={styles.statGrid}>
-        <StatCard
-          label="Peaks climbed"
-          value={climbedIds.size}
-          sublabel={`of ${allMountains.length} tracked`}
-        />
+        <StatCard featured label="Peaks climbed" value={climbedIds.size} sublabel={heroSublabel} />
         <StatCard
           label="Highest climbed"
           value={highest ? formatElevation(highest.elevation, unit) : '—'}
@@ -60,6 +70,19 @@ export function DashboardPage() {
           const { climbed } = getCollectionProgress(collection, climbedIds)
           return <CollectionRing key={collection.id} collection={collection} climbedCount={climbed} />
         })}
+      </div>
+
+      <div className={styles.dashColumns}>
+        <div>
+          <h2 className={styles.sectionTitle}>All climbs</h2>
+          <ClimbsTimeline ascents={ascents} unit={unit} />
+        </div>
+        <div>
+          <h2 className={styles.sectionTitle}>Climbs per year</h2>
+          <ClimbsPerYearChart ascents={ascents} />
+          <h2 className={styles.sectionTitle}>Altitude bands</h2>
+          <AltitudeBands mountains={allMountains} climbedIds={climbedIds} unit={unit} />
+        </div>
       </div>
 
       <h2 className={styles.sectionTitle}>Your data</h2>
