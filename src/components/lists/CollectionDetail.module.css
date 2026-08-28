@@ -11,9 +11,39 @@
 }
 
 .tagline {
-  margin: 6px 0 20px;
+  margin: 6px 0 0;
   color: var(--text-secondary);
   font-size: 14px;
+}
+
+.description {
+  margin: 16px 0 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+  font-size: 13.5px;
+  color: var(--text-secondary);
+}
+
+.description p {
+  margin: 0;
+}
+
+.noDescription {
+  font-style: italic;
+  color: var(--text-tertiary);
+}
+
+.wikiLink {
+  display: inline-block;
+  margin-top: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.wikiLink:hover {
+  text-decoration: underline;
 }
 
 .list {

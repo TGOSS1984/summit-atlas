@@ -2,6 +2,7 @@ import type { Collection } from '../../types/collection'
 import type { Mountain } from '../../types/mountain'
 import { formatElevation } from '../../utils/units'
 import { useUnit } from '../../context/UnitContext'
+import { getCollectionWikiExtract } from '../../utils/wiki'
 import styles from './CollectionDetail.module.css'
 
 interface CollectionDetailProps {
@@ -12,12 +13,29 @@ interface CollectionDetailProps {
 
 export function CollectionDetail({ collection, mountains, climbedIds }: CollectionDetailProps) {
   const { unit } = useUnit()
+  const wiki = getCollectionWikiExtract(collection.id)
   const missingCount = collection.peakIds.length - mountains.length
 
   return (
     <div className={styles.panel}>
       <h2 className={styles.title}>{collection.name}</h2>
       <p className={styles.tagline}>{collection.tagline}</p>
+
+      <div className={styles.description}>
+        {wiki ? (
+          <>
+            <p>{wiki.extract}</p>
+            <a href={wiki.url} target="_blank" rel="noreferrer" className={styles.wikiLink}>
+              Read more on Wikipedia
+            </a>
+          </>
+        ) : (
+          // either no wikipediaTitle set for this one (a curated grouping
+          // rather than a real named list) or the fetch script hasn't
+          // pulled it in yet - both look the same to a viewer, which is fine
+          <p className={styles.noDescription}>No summary available.</p>
+        )}
+      </div>
 
       <ul className={styles.list}>
         {mountains.map((mountain) => {

@@ -10,7 +10,8 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "test": "vitest run",
-    "fetch-wiki:mountains": "tsx scripts/fetch-wiki-mountains.ts"
+    "fetch-wiki:mountains": "tsx scripts/fetch-wiki-mountains.ts",
+    "fetch-wiki:collections": "tsx scripts/fetch-wiki-collections.ts"
   },
   "dependencies": {
     "leaflet": "^1.9.4",

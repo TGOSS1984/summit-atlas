@@ -2,15 +2,19 @@ import type { Collection } from '../types/collection'
 
 // eight-thousanders list is complete since commit 14. alpine-classics stays
 // a curated pick rather than a fixed real-world list. the 5 UK collections
-// below are curated subsets of much bigger real lists (214 Wainwrights,
-// ~282 Munros etc.) rather than every single entry - see mountains.ts for
-// the reasoning
+// are curated subsets of much bigger real lists (214 Wainwrights, ~282
+// Munros etc.) rather than every single entry - see mountains.ts for the
+// reasoning. wikipediaTitle is only set where the collection maps to one
+// real wikipedia topic - alpine-classics and welsh-mountains are curated
+// groupings of mine rather than a single named real-world list, so they're
+// left unset on purpose
 export const COLLECTIONS: Collection[] = [
   {
     id: 'seven-summits',
     name: 'Seven Summits',
     tagline: 'The highest peak on each continent',
     colorToken: 'accent',
+    wikipediaTitle: 'Seven Summits',
     peakIds: [
       'everest',
       'aconcagua',
@@ -26,6 +30,7 @@ export const COLLECTIONS: Collection[] = [
     name: 'Eight-Thousanders',
     tagline: 'The 14 peaks above 8,000 metres',
     colorToken: 'ice',
+    wikipediaTitle: 'Eight-thousander',
     peakIds: [
       'everest',
       'k2',
@@ -55,6 +60,7 @@ export const COLLECTIONS: Collection[] = [
     name: 'Wainwrights',
     tagline: "Alfred Wainwright's 214 fells of the Lake District",
     colorToken: 'gold',
+    wikipediaTitle: 'List of Wainwrights',
     peakIds: [
       'scafell-pike',
       'sca-fell',
@@ -81,6 +87,7 @@ export const COLLECTIONS: Collection[] = [
     name: 'Scottish Munros',
     tagline: "Scotland's mountains over 3,000ft",
     colorToken: 'ice',
+    wikipediaTitle: 'Munro',
     peakIds: [
       'ben-nevis',
       'ben-macdui',
@@ -125,6 +132,7 @@ export const COLLECTIONS: Collection[] = [
     name: 'Peak District',
     tagline: 'The moorland peaks of the Peak District',
     colorToken: 'red',
+    wikipediaTitle: 'Peak District',
     peakIds: [
       'kinder-scout',
       'bleaklow',
@@ -141,6 +149,7 @@ export const COLLECTIONS: Collection[] = [
     name: 'Yorkshire Dales',
     tagline: 'Fells and moors of the Yorkshire Dales, including the Three Peaks',
     colorToken: 'accent',
+    wikipediaTitle: 'Yorkshire Dales',
     peakIds: [
       'whernside',
       'ingleborough',
