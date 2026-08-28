@@ -23,7 +23,7 @@
    needs the extra contrast that light theme's dark text didn't */
 :global([data-theme='dark']) .hero {
   background:
-    linear-gradient(180deg, rgba(19, 35, 43, 0.55), rgba(19, 35, 43, 0.9)),
+    linear-gradient(180deg, rgba(19, 35, 43, 0.1), rgba(19, 35, 43, 0.9)),
     url('/images/dashboard-hero-bg-dark.webp') center top / cover no-repeat;
   border-color: var(--border-strong);
 }

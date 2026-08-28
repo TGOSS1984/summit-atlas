@@ -95,9 +95,22 @@ export function ExplorePage() {
         />
       </div>
 
-      <p className={styles.count}>
-        {filtered.length} peak{filtered.length === 1 ? '' : 's'}
-      </p>
+      <div className={styles.countRow}>
+        <p className={styles.count}>
+          {filtered.length} peak{filtered.length === 1 ? '' : 's'}
+        </p>
+
+        {/* explains the two dashed lines on each card's ridge graphic - easy
+            to miss otherwise, and easy to mix up which line means what */}
+        <div className={styles.legend}>
+          <span className={styles.legendItem}>
+            <span className={styles.legendLineWorld} /> World's highest
+          </span>
+          <span className={styles.legendItem}>
+            <span className={styles.legendLineCountry} /> Country's highest
+          </span>
+        </div>
+      </div>
 
       <div className={styles.grid}>
         {visible.map((mountain) => (
