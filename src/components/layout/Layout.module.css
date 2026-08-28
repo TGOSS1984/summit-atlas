@@ -78,3 +78,96 @@
   min-width: 0;
   padding: 40px 44px;
 }
+
+.mobileTopBar {
+  display: none;
+}
+
+.tabbar {
+  display: none;
+}
+
+/* below this, the sidebar gives way to a top bar (brand + toggles) and a
+   fixed bottom tab bar - same breakpoint peakbook uses for the same swap */
+@media (max-width: 760px) {
+  .app {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    display: none;
+  }
+
+  .main {
+    padding: 24px 18px 84px;
+  }
+
+  .mobileTopBar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 16px 18px;
+    background: var(--bg-elevated);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .mobileBrand {
+    font-family: var(--font-display);
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  .mobileToggles {
+    display: flex;
+    gap: 8px;
+  }
+
+  .mobileToggle {
+    padding: 6px 12px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-strong);
+    color: var(--text-secondary);
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  .mobileToggle:hover {
+    color: var(--text);
+    background: var(--border);
+  }
+
+  .tabbar {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--bg-elevated);
+    border-top: 1px solid var(--border);
+    z-index: 900;
+    padding: 8px 0 max(8px, env(safe-area-inset-bottom));
+  }
+
+  .tabItem {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--text-tertiary);
+    text-decoration: none;
+  }
+
+  .tabItem svg {
+    width: 21px;
+    height: 21px;
+  }
+
+  .tabItemActive {
+    color: var(--accent);
+  }
+}

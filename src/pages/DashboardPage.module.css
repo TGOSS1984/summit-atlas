@@ -15,3 +15,18 @@
   gap: 28px;
   margin-top: 20px;
 }
+
+@media (max-width: 760px) {
+  .statGrid {
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .sectionTitle {
+    margin-top: 32px;
+  }
+
+  .ringGrid {
+    gap: 18px;
+  }
+}

@@ -78,3 +78,9 @@
 .submitButton:hover {
   background: var(--accent-bright);
 }
+
+@media (max-width: 480px) {
+  .row {
+    grid-template-columns: 1fr;
+  }
+}

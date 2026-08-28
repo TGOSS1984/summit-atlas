@@ -3,7 +3,6 @@ import { useTheme } from '../../context/ThemeContext'
 import { useUnit } from '../../context/UnitContext'
 import styles from './Layout.module.css'
 
-// import to follow
 const NAV_ITEMS = [
   { to: '/', label: 'Dashboard', icon: DashboardIcon, end: true },
   { to: '/explore', label: 'Explore', icon: ExploreIcon },
@@ -15,9 +14,11 @@ export function Layout() {
   return (
     <div className={styles.app}>
       <Sidebar />
+      <MobileTopBar />
       <main className={styles.main}>
         <Outlet />
       </main>
+      <TabBar />
     </div>
   )
 }
@@ -54,6 +55,52 @@ function Sidebar() {
       <button className={styles.themeToggle} onClick={toggleUnit}>
         switch to {unit === 'm' ? 'ft' : 'm'}
       </button>
+    </nav>
+  )
+}
+
+// sidebar disappears below the mobile breakpoint (see Layout.module.css), so
+// its brand mark and the two toggles need somewhere else to live - this bar
+// is the mobile-only stand-in, hidden entirely on desktop. same plain toggle
+// buttons as the sidebar for now, just relocated - a nicer segmented-pill
+// version is on the list, not done here
+function MobileTopBar() {
+  const { theme, toggleTheme } = useTheme()
+  const { unit, toggleUnit } = useUnit()
+
+  return (
+    <div className={styles.mobileTopBar}>
+      <span className={styles.mobileBrand}>Summit Atlas</span>
+      <div className={styles.mobileToggles}>
+        <button className={styles.mobileToggle} onClick={toggleTheme}>
+          {theme === 'dark' ? 'light' : 'dark'}
+        </button>
+        <button className={styles.mobileToggle} onClick={toggleUnit}>
+          {unit === 'm' ? 'ft' : 'm'}
+        </button>
+      </div>
+    </div>
+  )
+}
+
+// bottom tab bar, mobile-only counterpart to the sidebar's nav list - same
+// NAV_ITEMS, same icons, just a different container
+function TabBar() {
+  return (
+    <nav className={styles.tabbar}>
+      {NAV_ITEMS.map(({ to, label, icon: Icon, end }) => (
+        <NavLink
+          key={to}
+          to={to}
+          end={end}
+          className={({ isActive }) =>
+            isActive ? `${styles.tabItem} ${styles.tabItemActive}` : styles.tabItem
+          }
+        >
+          <Icon />
+          <span>{label}</span>
+        </NavLink>
+      ))}
     </nav>
   )
 }

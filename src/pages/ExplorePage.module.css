@@ -30,9 +30,9 @@
 
 .grid {
   display: grid;
-  /* 248px matches peakbook's own card grid - not a hardcoded "4 columns",
-     just the min-width that happens to land on 4-up at typical desktop width */
-  grid-template-columns: repeat(auto-fill, minmax(248px, 1fr));
+  /* tightened from 248px - at typical desktop width that was only ever
+     landing on 5 columns with a chunk of dead space on the right */
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 16px;
 }
 
@@ -63,8 +63,6 @@
   opacity: 0.4;
   cursor: default;
 }
-
-/*additions for log own peak modal*/
 
 .pageHeader {
   display: flex;

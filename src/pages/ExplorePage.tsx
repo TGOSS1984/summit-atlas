@@ -12,7 +12,7 @@ import { AddPeakModal } from '../components/mountain/AddPeakModal'
 import type { Mountain } from '../types/mountain'
 import styles from './ExplorePage.module.css'
 
-const PAGE_SIZE = 12
+const PAGE_SIZE = 24
 
 const CONTINENT_OPTIONS = [
   { id: null, label: 'All continents' },
