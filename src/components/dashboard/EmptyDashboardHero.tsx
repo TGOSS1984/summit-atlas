@@ -13,7 +13,7 @@ export function EmptyDashboardHero() {
 
   return (
     <div className={styles.hero}>
-      <SummitPinIcon className={styles.mark} />
+      
       <h2 className={styles.title}>Nothing logged yet</h2>
       <p className={styles.subtitle}>
         Search for a peak you've climbed and add it to your logbook - your dashboard, map and

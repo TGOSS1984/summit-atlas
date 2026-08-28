@@ -3,6 +3,7 @@ import type { Collection } from '../../types/collection'
 import { formatElevation } from '../../utils/units'
 import { buildRidgeSvg } from '../../utils/ridgeSvg'
 import { useUnit } from '../../context/UnitContext'
+import { FlagIcon } from '../common/FlagIcon'
 import styles from './MountainCard.module.css'
 
 interface MountainCardProps {
@@ -49,7 +50,7 @@ export function MountainCard({
 
       <div className={styles.body}>
         <div className={styles.titleRow}>
-          <span className={styles.flag}>{mountain.flag}</span>
+          <FlagIcon flag={mountain.flag} className={styles.flag} />
           <h3 className={styles.name}>{mountain.name}</h3>
         </div>
         <p className={styles.meta}>

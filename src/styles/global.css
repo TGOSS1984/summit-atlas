@@ -62,3 +62,11 @@ svg {
   display: block;
   max-width: 100%;
 }
+
+/* flag-icons ships unstyled beyond sizing/background - these just soften
+   the edges and line them up nicely inline with text. used across
+   MountainCard, ClimbsTimeline and CollectionDetail */
+.fi {
+  border-radius: 2px;
+  vertical-align: -0.1em;
+}

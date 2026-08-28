@@ -1,5 +1,6 @@
 import { getAscentsByYear, type Ascent } from '../../utils/dashboardStats'
 import { formatElevation, type ElevationUnit } from '../../utils/units'
+import { FlagIcon } from '../common/FlagIcon'
 import styles from './ClimbsTimeline.module.css'
 
 interface ClimbsTimelineProps {
@@ -22,7 +23,7 @@ export function ClimbsTimeline({ ascents, unit }: ClimbsTimelineProps) {
           <div className={styles.card}>
             {yearAscents.map((ascent, i) => (
               <div key={`${ascent.mountain.id}-${ascent.date}-${i}`} className={styles.row}>
-                <span className={styles.flag}>{ascent.mountain.flag}</span>
+                <FlagIcon flag={ascent.mountain.flag} className={styles.flag} />
                 <div className={styles.body}>
                   <div className={styles.name}>{ascent.mountain.name}</div>
                   <div className={styles.meta}>
@@ -43,9 +44,6 @@ export function ClimbsTimeline({ ascents, unit }: ClimbsTimelineProps) {
   )
 }
 
-// "14 Jun 2018" rather than the raw ISO string - reads better in a list this
-// dense. built off the date string directly instead of `new Date(...)` to
-// sidestep local-timezone shifting the displayed day back by one
 function formatDate(iso: string): string {
   const [y, m, d] = iso.split('-').map(Number)
   const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']

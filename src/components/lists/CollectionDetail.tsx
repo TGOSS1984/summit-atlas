@@ -3,6 +3,7 @@ import type { Mountain } from '../../types/mountain'
 import { formatElevation } from '../../utils/units'
 import { useUnit } from '../../context/UnitContext'
 import { getCollectionWikiExtract } from '../../utils/wiki'
+import { FlagIcon } from '../common/FlagIcon'
 import styles from './CollectionDetail.module.css'
 
 interface CollectionDetailProps {
@@ -42,7 +43,7 @@ export function CollectionDetail({ collection, mountains, climbedIds }: Collecti
           const climbed = climbedIds.has(mountain.id)
           return (
             <li key={mountain.id} className={styles.row}>
-              <span className={styles.flag}>{mountain.flag}</span>
+              <FlagIcon flag={mountain.flag} className={styles.flag} />
               <span className={styles.name}>{mountain.name}</span>
               <span className={styles.country}>{mountain.country}</span>
               <span className={styles.elevation}>{formatElevation(mountain.elevation, unit)}</span>

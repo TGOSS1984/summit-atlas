@@ -7,6 +7,7 @@ import { ClimbsProvider } from './context/ClimbsContext'
 import { CustomPeaksProvider } from './context/CustomPeaksContext'
 import './styles/tokens.css'
 import './styles/global.css'
+import 'flag-icons/css/flag-icons.min.css'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
