@@ -41,11 +41,21 @@
   color: var(--text-secondary);
 }
 
+/* houses the climbed/unclimbed chip and pagination together - chip stays on
+   the left, pagination (when there is any) sits to the right */
+.bottomBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 28px;
+}
+
 .pagination {
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-top: 28px;
   font-size: 13px;
   color: var(--text-secondary);
 }
@@ -86,4 +96,11 @@
 
 .addPeakButton:hover {
   background: var(--accent-bright);
+}
+
+@media (max-width: 760px) {
+  .bottomBar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 }

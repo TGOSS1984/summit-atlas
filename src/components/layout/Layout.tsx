@@ -1,6 +1,7 @@
 import { NavLink, Outlet } from 'react-router-dom'
 import { useTheme } from '../../context/ThemeContext'
 import { useUnit } from '../../context/UnitContext'
+import { SummitPinIcon } from '../common/SummitPinIcon'
 import styles from './Layout.module.css'
 
 const NAV_ITEMS = [
@@ -143,21 +144,6 @@ function TabBar() {
   )
 }
 
-// the Summit Pin mark from the palette lab - a peak with a flagged pin at
-// the apex, echoing the "log a climb" action. same shape as the favicon,
-// just currentColor here instead of a fixed badge so it inherits whatever
-// this container's already using for its accent
-function SummitPinIcon({ className }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 22 22" fill="none" className={className}>
-      <path d="M2 18 L8 7 L14 18 Z" fill="currentColor" opacity="0.9" />
-      <line x1="8" y1="7" x2="8" y2="2.4" stroke="currentColor" strokeWidth="1.4" />
-      <path d="M8 2.4 L13 4 L8 5.6 Z" fill="currentColor" />
-    </svg>
-  )
-}
-
-// plain sun/moon glyphs - just need to read clearly at 14px inside the pill
 function SunIcon() {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

@@ -19,13 +19,23 @@ const COLLECTIONS: Collection[] = [
   { id: 'second-collection', name: 'Second Collection', tagline: '', colorToken: 'ice', peakIds: ['a'] },
 ]
 
+// only 'a' is climbed - reused across the whole suite below, not just the
+// climbed-status describe block, since every filterMountains() call needs
+// a climbedIds set now regardless of whether that particular test cares
+const CLIMBED_IDS = new Set(['a'])
+
 describe('filterMountains', () => {
   it('returns everything when filters are empty', () => {
-    expect(filterMountains(MOUNTAINS, ALL_FILTERS, COLLECTIONS)).toHaveLength(3)
+    expect(filterMountains(MOUNTAINS, ALL_FILTERS, COLLECTIONS, CLIMBED_IDS)).toHaveLength(3)
   })
 
   it('filters by continent', () => {
-    const result = filterMountains(MOUNTAINS, { ...ALL_FILTERS, continent: 'Asia' }, COLLECTIONS)
+    const result = filterMountains(
+      MOUNTAINS,
+      { ...ALL_FILTERS, continent: 'Asia' },
+      COLLECTIONS,
+      CLIMBED_IDS,
+    )
     expect(result.map((m) => m.id)).toEqual(['c'])
   })
 
@@ -34,13 +44,18 @@ describe('filterMountains', () => {
       MOUNTAINS,
       { ...ALL_FILTERS, collectionId: 'test-collection' },
       COLLECTIONS,
+      CLIMBED_IDS,
     )
     expect(result.map((m) => m.id).sort()).toEqual(['a', 'c'])
   })
 
   it('searches across name, range and country, case-insensitively', () => {
-    expect(filterMountains(MOUNTAINS, { ...ALL_FILTERS, search: 'beta' }, COLLECTIONS)).toHaveLength(1)
-    expect(filterMountains(MOUNTAINS, { ...ALL_FILTERS, search: 'OTHERLAND' }, COLLECTIONS)).toHaveLength(1)
+    expect(
+      filterMountains(MOUNTAINS, { ...ALL_FILTERS, search: 'beta' }, COLLECTIONS, CLIMBED_IDS),
+    ).toHaveLength(1)
+    expect(
+      filterMountains(MOUNTAINS, { ...ALL_FILTERS, search: 'OTHERLAND' }, COLLECTIONS, CLIMBED_IDS),
+    ).toHaveLength(1)
   })
 
   it('combines filters', () => {
@@ -48,8 +63,41 @@ describe('filterMountains', () => {
       MOUNTAINS,
       { ...ALL_FILTERS, continent: 'Europe', collectionId: 'test-collection' },
       COLLECTIONS,
+      CLIMBED_IDS,
     )
     expect(result.map((m) => m.id)).toEqual(['a'])
+  })
+})
+
+describe('filterMountains - climbed status', () => {
+  it('shows only climbed peaks', () => {
+    const result = filterMountains(
+      MOUNTAINS,
+      { ...ALL_FILTERS, climbedStatus: 'climbed' },
+      COLLECTIONS,
+      CLIMBED_IDS,
+    )
+    expect(result.map((m) => m.id)).toEqual(['a'])
+  })
+
+  it('shows only unclimbed peaks', () => {
+    const result = filterMountains(
+      MOUNTAINS,
+      { ...ALL_FILTERS, climbedStatus: 'unclimbed' },
+      COLLECTIONS,
+      CLIMBED_IDS,
+    )
+    expect(result.map((m) => m.id).sort()).toEqual(['b', 'c'])
+  })
+
+  it('combines with other filters', () => {
+    const result = filterMountains(
+      MOUNTAINS,
+      { ...ALL_FILTERS, continent: 'Europe', climbedStatus: 'unclimbed' },
+      COLLECTIONS,
+      CLIMBED_IDS,
+    )
+    expect(result.map((m) => m.id)).toEqual(['b'])
   })
 })
 

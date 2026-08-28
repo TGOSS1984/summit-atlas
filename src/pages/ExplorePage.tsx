@@ -26,6 +26,12 @@ const COLLECTION_OPTIONS = [
   ...COLLECTIONS.map((c) => ({ id: c.id, label: c.name })),
 ]
 
+const CLIMBED_STATUS_OPTIONS = [
+  { id: null, label: 'All' },
+  { id: 'climbed', label: 'Climbed' },
+  { id: 'unclimbed', label: 'Unclimbed' },
+]
+
 export function ExplorePage() {
   const { climbedIds } = useClimbs()
   const { customPeaks } = useCustomPeaks()
@@ -33,6 +39,7 @@ export function ExplorePage() {
     search: '',
     continent: null,
     collectionId: null,
+    climbedStatus: null,
   })
   const [page, setPage] = useState(1)
   const [selectedMountain, setSelectedMountain] = useState<Mountain | null>(null)
@@ -45,8 +52,8 @@ export function ExplorePage() {
   const countryMaxElevations = useMemo(() => getCountryMaxElevations(allMountains), [allMountains])
 
   const filtered = useMemo(
-    () => filterMountains(allMountains, filters, COLLECTIONS),
-    [allMountains, filters],
+    () => filterMountains(allMountains, filters, COLLECTIONS, climbedIds),
+    [allMountains, filters, climbedIds],
   )
 
   const pageCount = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE))
@@ -111,23 +118,36 @@ export function ExplorePage() {
 
       {visible.length === 0 && <p className={styles.empty}>Nothing matches those filters.</p>}
 
-      {pageCount > 1 && (
-        <div className={styles.pagination}>
-          <button type="button" disabled={currentPage === 1} onClick={() => setPage((p) => p - 1)}>
-            Prev
-          </button>
-          <span>
-            Page {currentPage} of {pageCount}
-          </span>
-          <button
-            type="button"
-            disabled={currentPage === pageCount}
-            onClick={() => setPage((p) => p + 1)}
-          >
-            Next
-          </button>
-        </div>
-      )}
+      {/* climbed/unclimbed sits down here with pagination rather than up
+          with the continent/collection chips - Tom's call, keeps it right
+          next to the thing it actually changes (how many pages there are).
+          stays outside the pageCount > 1 check so it's still there to fix
+          an over-filtered "nothing matches" state above */}
+      <div className={styles.bottomBar}>
+        <FilterChips
+          options={CLIMBED_STATUS_OPTIONS}
+          activeId={filters.climbedStatus}
+          onSelect={(climbedStatus) => updateFilters({ climbedStatus })}
+        />
+
+        {pageCount > 1 && (
+          <div className={styles.pagination}>
+            <button type="button" disabled={currentPage === 1} onClick={() => setPage((p) => p - 1)}>
+              Prev
+            </button>
+            <span>
+              Page {currentPage} of {pageCount}
+            </span>
+            <button
+              type="button"
+              disabled={currentPage === pageCount}
+              onClick={() => setPage((p) => p + 1)}
+            >
+              Next
+            </button>
+          </div>
+        )}
+      </div>
 
       {selectedMountain && (
         <MountainDetailModal

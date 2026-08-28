@@ -1,0 +1,100 @@
+.hero {
+  position: relative;
+  overflow: hidden;
+  margin-top: 24px;
+  padding: 72px 32px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* light theme's own image, no scrim - the image is pale enough already
+     that a readability overlay just washed it out to almost nothing.
+     --text is dark enough against it on its own */
+  background: url('/images/dashboard-hero-bg-light.webp') center top / cover no-repeat;
+}
+
+/* dark theme's own image - both are real photo/illustration assets, not
+   colours, so neither can flow through a token the way everything else
+   here does. documented exception to the "always var(--token)" rule,
+   alongside Leaflet's SVG markers and the favicon/theme-color hardcoding
+   (see project notes). this one keeps its scrim - busier image, light text
+   needs the extra contrast that light theme's dark text didn't */
+:global([data-theme='dark']) .hero {
+  background:
+    linear-gradient(180deg, rgba(19, 35, 43, 0.55), rgba(19, 35, 43, 0.9)),
+    url('/images/dashboard-hero-bg-dark.webp') center top / cover no-repeat;
+  border-color: var(--border-strong);
+}
+
+.mark {
+  width: 40px;
+  height: 40px;
+  color: var(--accent);
+  margin-bottom: 20px;
+}
+
+.title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 26px;
+  font-weight: 600;
+}
+
+.subtitle {
+  margin: 12px 0 0;
+  max-width: 440px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 28px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.primary {
+  border: none;
+  background: var(--accent);
+  color: var(--accent-ink);
+  border-radius: var(--radius-sm);
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.primary:hover {
+  background: var(--accent-bright);
+}
+
+.secondary {
+  border: 1px solid var(--border-strong);
+  background: var(--card);
+  color: var(--text);
+  border-radius: var(--radius-sm);
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.secondary:hover {
+  background: var(--card-hover);
+}
+
+@media (max-width: 760px) {
+  .hero {
+    padding: 48px 20px;
+    margin-top: 16px;
+  }
+
+  .title {
+    font-size: 22px;
+  }
+}

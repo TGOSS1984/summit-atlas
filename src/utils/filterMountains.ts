@@ -5,21 +5,27 @@ export interface MountainFilters {
   search: string
   continent: string | null // null = all continents
   collectionId: string | null // null = all collections
+  // 'climbed' | 'unclimbed' | null (= all) - kept as a plain string rather
+  // than a literal union so it plugs straight into FilterChips' generic
+  // string|null option type without a cast, same as continent/collectionId
+  climbedStatus: string | null
 }
 
 export const ALL_FILTERS: MountainFilters = {
   search: '',
   continent: null,
   collectionId: null,
+  climbedStatus: null,
 }
 
-// country and climbed-status filters aren't here yet - country needs a
-// proper picker once the real dataset lands (18 peaks doesn't warrant one),
-// climbed status needs the persisted store from commit 12
+// country filter still isn't here - needs a proper picker once there's a
+// reason to build one, 163 peaks across 67 countries doesn't really
+// warrant it yet
 export function filterMountains(
   mountains: Mountain[],
   filters: MountainFilters,
   collections: Collection[],
+  climbedIds: Set<string>,
 ): Mountain[] {
   let result = mountains
 
@@ -31,6 +37,12 @@ export function filterMountains(
     const collection = collections.find((c) => c.id === filters.collectionId)
     const peakIds = new Set(collection?.peakIds ?? [])
     result = result.filter((m) => peakIds.has(m.id))
+  }
+
+  if (filters.climbedStatus === 'climbed') {
+    result = result.filter((m) => climbedIds.has(m.id))
+  } else if (filters.climbedStatus === 'unclimbed') {
+    result = result.filter((m) => !climbedIds.has(m.id))
   }
 
   const query = filters.search.trim().toLowerCase()
@@ -60,7 +72,7 @@ export function getCountryMaxElevations(mountains: Mountain[]): Map<string, numb
 }
 
 // reverse lookup, same reasoning as getCountryMaxElevations above - collections
-// own peakIds (commit 5), so cards need this the other way round to draw their dots
+// own peakIds, so cards need this the other way round to draw their dots
 export function getCollectionsByMountainId(collections: Collection[]): Map<string, Collection[]> {
   const map = new Map<string, Collection[]>()
   for (const collection of collections) {

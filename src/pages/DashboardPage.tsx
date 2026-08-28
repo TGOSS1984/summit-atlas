@@ -21,6 +21,7 @@ import { AltitudeBands } from '../components/dashboard/AltitudeBands'
 import { ClimbsTimeline } from '../components/dashboard/ClimbsTimeline'
 import { DataControls } from '../components/dashboard/DataControls'
 import { DemoDataBanner } from '../components/dashboard/DemoDataBanner'
+import { EmptyDashboardHero } from '../components/dashboard/EmptyDashboardHero'
 import styles from './DashboardPage.module.css'
 
 export function DashboardPage() {
@@ -32,19 +33,28 @@ export function DashboardPage() {
   // every stat below should count anything the user's tracking, home-grown or not
   const allMountains = useMemo(() => [...MOUNTAINS, ...customPeaks], [customPeaks])
 
+  // one flattened, newest-first ascent list feeds both the per-year chart
+  // and the all-climbs timeline below, so it's only built once per render
+  const ascents = useMemo(() => getAllAscents(allMountains, climbs), [allMountains, climbs])
+
+  // both hooks above have to run before this check - bailing out earlier
+  // than that would break React's rules of hooks the moment someone hits
+  // an empty logbook
+  if (climbedIds.size === 0) {
+    return (
+      <div>
+        <h1>Dashboard</h1>
+        <EmptyDashboardHero />
+      </div>
+    )
+  }
+
   const highest = getHighestClimbed(allMountains, climbedIds)
   const totalElevation = getTotalElevationClimbed(allMountains, climbedIds)
   const countries = getCountriesClimbedCount(allMountains, climbedIds)
   const continents = getContinentsClimbedCount(allMountains, climbedIds)
 
-  // one flattened, newest-first ascent list feeds both the per-year chart
-  // and the all-climbs timeline below, so it's only built once per render
-  const ascents = useMemo(() => getAllAscents(allMountains, climbs), [allMountains, climbs])
-
-  const heroSublabel =
-    climbedIds.size === 0
-      ? 'log a climb to see how you stack up against Everest'
-      : `${getEverestMultiple(totalElevation).toFixed(1)}× the height of Everest, stacked end to end`
+  const heroSublabel = `${getEverestMultiple(totalElevation).toFixed(1)}× the height of Everest, stacked end to end`
 
   return (
     <div>
