@@ -7,6 +7,7 @@ const STORAGE_KEY = 'summit-atlas-theme'
 interface ThemeContextValue {
   theme: Theme
   toggleTheme: () => void
+  setTheme: (theme: Theme) => void
 }
 
 const ThemeContext = createContext<ThemeContextValue | undefined>(undefined)
@@ -20,16 +21,23 @@ function getInitialTheme(): Theme {
 }
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [theme, setTheme] = useState<Theme>(getInitialTheme)
+  const [theme, setThemeState] = useState<Theme>(getInitialTheme)
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme)
     localStorage.setItem(STORAGE_KEY, theme)
   }, [theme])
 
-  const toggleTheme = () => setTheme((t) => (t === 'dark' ? 'light' : 'dark'))
+  const toggleTheme = () => setThemeState((t) => (t === 'dark' ? 'light' : 'dark'))
+  // explicit setter for the sidebar's segmented pill - a toggle doesn't work
+  // once each button represents a fixed state instead of "flip whatever's on"
+  const setTheme = (next: Theme) => setThemeState(next)
 
-  return <ThemeContext.Provider value={{ theme, toggleTheme }}>{children}</ThemeContext.Provider>
+  return (
+    <ThemeContext.Provider value={{ theme, toggleTheme, setTheme }}>
+      {children}
+    </ThemeContext.Provider>
+  )
 }
 
 export function useTheme() {

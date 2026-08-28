@@ -15,12 +15,13 @@ function getInitialUnit(): ElevationUnit {
 interface UnitContextValue {
   unit: ElevationUnit
   toggleUnit: () => void
+  setUnit: (unit: ElevationUnit) => void
 }
 
 const UnitContext = createContext<UnitContextValue | null>(null)
 
 export function UnitProvider({ children }: { children: ReactNode }) {
-  const [unit, setUnit] = useState<ElevationUnit>(getInitialUnit)
+  const [unit, setUnitState] = useState<ElevationUnit>(getInitialUnit)
 
   // no need for theme's inline-head-script trick here - a number briefly
   // showing in the wrong unit for one frame isn't the jarring flash a whole
@@ -34,10 +35,18 @@ export function UnitProvider({ children }: { children: ReactNode }) {
   }, [unit])
 
   function toggleUnit() {
-    setUnit((prev) => (prev === 'm' ? 'ft' : 'm'))
+    setUnitState((prev) => (prev === 'm' ? 'ft' : 'm'))
   }
 
-  return <UnitContext.Provider value={{ unit, toggleUnit }}>{children}</UnitContext.Provider>
+  // segmented pill buttons each represent one fixed unit rather than
+  // flipping whatever's current, so they need a direct setter, not toggle
+  function setUnit(next: ElevationUnit) {
+    setUnitState(next)
+  }
+
+  return (
+    <UnitContext.Provider value={{ unit, toggleUnit, setUnit }}>{children}</UnitContext.Provider>
+  )
 }
 
 export function useUnit(): UnitContextValue {

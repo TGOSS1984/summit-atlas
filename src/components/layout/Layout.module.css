@@ -12,6 +12,13 @@
   padding: 24px 12px;
   background: var(--bg-elevated);
   border-right: 1px solid var(--border);
+  /* was a normal-flow flex child, so a tall .main pushed the whole page
+     (sidebar included) past the viewport and the toggle bar at the bottom
+     scrolled away with it - sticky + its own scroll keeps it pinned */
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
 }
 
 .brand {
@@ -67,20 +74,53 @@
   font-weight: 600;
 }
 
-.themeToggle {
+/* single pill housing both the unit and theme switches - replaces the old
+   two stacked .themeToggle buttons. margin-top: auto still does the job of
+   pinning this to the bottom of the flex column */
+.toggleBar {
   margin-top: auto;
-  padding: 8px 12px;
+  display: flex;
+  align-items: stretch;
+  padding: 3px;
   border-radius: var(--radius-sm);
   border: 1px solid var(--border-strong);
-  color: var(--text-secondary);
-  font-size: 12.5px;
-  font-weight: 600;
-  text-align: left;
+  background: var(--bg);
 }
 
-.themeToggle:hover {
-  color: var(--text);
-  background: var(--border);
+.toggleBtn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 7px 0;
+  border-radius: calc(var(--radius-sm) - 3px);
+  color: var(--text-tertiary);
+  font-size: 12px;
+  font-weight: 600;
+  transition: background 0.15s, color 0.15s;
+}
+
+.toggleBtn svg {
+  width: 14px;
+  height: 14px;
+}
+
+.toggleBtn:hover {
+  color: var(--text-secondary);
+}
+
+.toggleBtnActive {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+/* thin rule between the unit pair and the theme pair so the pill still
+   reads as two switches, not one four-way control */
+.toggleDivider {
+  width: 1px;
+  margin: 4px 2px;
+  background: var(--border-strong);
 }
 
 .main {
