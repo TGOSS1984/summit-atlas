@@ -1,9 +1,10 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { MapContainer, TileLayer, CircleMarker, Popup } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
 import { MOUNTAINS } from '../../data/mountains'
 import { useClimbs } from '../../context/ClimbsContext'
 import { useUnit } from '../../context/UnitContext'
+import { useCustomPeaks } from '../../context/CustomPeaksContext'
 import { COLLECTIONS_BY_MOUNTAIN } from '../../data/collectionsByMountain'
 import { formatElevation } from '../../utils/units'
 import { useTheme } from '../../context/ThemeContext'
@@ -27,16 +28,26 @@ export function WorldMap() {
   const { theme } = useTheme()
   const { climbedIds } = useClimbs()
   const { unit } = useUnit()
+  const { customPeaks } = useCustomPeaks()
   const [selectedMountain, setSelectedMountain] = useState<Mountain | null>(null)
   const climbedColor = resolveToken('--green')
   const unclimbedColor = resolveToken('--text-tertiary')
+
+  // custom peaks with no coordinates store NaN (see types/mountain.ts) -
+  // nothing to plot for those, so they get filtered out here rather than in
+  // CustomPeaksContext, which has no opinion on what each consumer does with them
+  const plottableMountains = useMemo(
+    () =>
+      [...MOUNTAINS, ...customPeaks].filter((m) => Number.isFinite(m.lat) && Number.isFinite(m.lng)),
+    [customPeaks],
+  )
 
   return (
     <div className={styles.mapWrapper}>
       <MapContainer center={[20, 10]} zoom={2} minZoom={2} className={styles.map} worldCopyJump>
         <TileLayer key={theme} url={TILE_URLS[theme]} attribution={TILE_ATTRIBUTION} />
 
-        {MOUNTAINS.map((mountain) => {
+        {plottableMountains.map((mountain) => {
           const climbed = climbedIds.has(mountain.id)
           return (
             <CircleMarker

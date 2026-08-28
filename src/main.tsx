@@ -4,6 +4,7 @@ import App from './App'
 import { ThemeProvider } from './context/ThemeContext'
 import { UnitProvider } from './context/UnitContext'
 import { ClimbsProvider } from './context/ClimbsContext'
+import { CustomPeaksProvider } from './context/CustomPeaksContext'
 import './styles/tokens.css'
 import './styles/global.css'
 
@@ -12,7 +13,9 @@ createRoot(document.getElementById('root')!).render(
     <ThemeProvider>
       <UnitProvider>
         <ClimbsProvider>
-          <App />
+          <CustomPeaksProvider>
+            <App />
+          </CustomPeaksProvider>
         </ClimbsProvider>
       </UnitProvider>
     </ThemeProvider>

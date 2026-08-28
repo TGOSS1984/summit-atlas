@@ -3,6 +3,7 @@ import type { Mountain } from '../../types/mountain'
 import type { Collection } from '../../types/collection'
 import { useClimbs } from '../../context/ClimbsContext'
 import { useUnit } from '../../context/UnitContext'
+import { useCustomPeaks } from '../../context/CustomPeaksContext'
 import { formatElevation } from '../../utils/units'
 import { getWikiExtract } from '../../utils/wiki'
 import { Modal } from '../common/Modal'
@@ -17,6 +18,7 @@ interface MountainDetailModalProps {
 export function MountainDetailModal({ mountain, collections, onClose }: MountainDetailModalProps) {
   const { getClimbsFor, logClimb, removeClimb } = useClimbs()
   const { unit } = useUnit()
+  const { removePeak } = useCustomPeaks()
   const climbs = getClimbsFor(mountain.id)
   const wiki = getWikiExtract(mountain.id)
   const [date, setDate] = useState('')
@@ -29,6 +31,13 @@ export function MountainDetailModal({ mountain, collections, onClose }: Mountain
     setDate('')
     setNote('')
   }
+
+  function handleRemove() {
+    removePeak(mountain.id)
+    onClose()
+  }
+
+  const hasCoordinates = !Number.isNaN(mountain.lat) && !Number.isNaN(mountain.lng)
 
   return (
     <Modal onClose={onClose}>
@@ -64,8 +73,11 @@ export function MountainDetailModal({ mountain, collections, onClose }: Mountain
           value={mountain.prominence ? formatElevation(mountain.prominence, unit) : '—'}
         />
         <Stat label="Continent" value={mountain.continent} />
-        <Stat label="Range" value={mountain.range} />
-        <Stat label="Coordinates" value={`${mountain.lat.toFixed(4)}, ${mountain.lng.toFixed(4)}`} />
+        <Stat label="Range" value={mountain.range || '—'} />
+        <Stat
+          label="Coordinates"
+          value={hasCoordinates ? `${mountain.lat.toFixed(4)}, ${mountain.lng.toFixed(4)}` : 'Not set'}
+        />
         <Stat label="First ascent" value={mountain.firstAscent ? String(mountain.firstAscent) : 'Unknown'} />
       </div>
 
@@ -77,6 +89,10 @@ export function MountainDetailModal({ mountain, collections, onClose }: Mountain
               Read more on Wikipedia
             </a>
           </>
+        ) : mountain.isCustom ? (
+          <p className={styles.noDescription}>
+            {"No Wikipedia summary for peaks you've added yourself."}
+          </p>
         ) : (
           // cache miss - either the fetch script hasn't run yet, or this
           // peak needs a wikipediaTitle override to resolve correctly
@@ -127,6 +143,14 @@ export function MountainDetailModal({ mountain, collections, onClose }: Mountain
           <p className={styles.emptyClimbs}>No ascents logged yet.</p>
         )}
       </div>
+
+      {mountain.isCustom && (
+        <div className={styles.customActions}>
+          <button type="button" className={styles.removeCustomButton} onClick={handleRemove}>
+            Remove this custom peak
+          </button>
+        </div>
+      )}
     </Modal>
   )
 }

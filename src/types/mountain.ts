@@ -21,4 +21,5 @@ export interface Mountain {
   lng: number
   firstAscent?: number
   wikipediaTitle?: string
+  isCustom?: boolean
 }

@@ -1,7 +1,9 @@
+import { useMemo } from 'react'
 import { MOUNTAINS } from '../data/mountains'
 import { COLLECTIONS } from '../data/collections'
 import { useClimbs } from '../context/ClimbsContext'
 import { useUnit } from '../context/UnitContext'
+import { useCustomPeaks } from '../context/CustomPeaksContext'
 import { formatElevation } from '../utils/units'
 import {
   getCollectionProgress,
@@ -19,11 +21,16 @@ import styles from './DashboardPage.module.css'
 export function DashboardPage() {
   const { climbedIds } = useClimbs()
   const { unit } = useUnit()
+  const { customPeaks } = useCustomPeaks()
 
-  const highest = getHighestClimbed(MOUNTAINS, climbedIds)
-  const totalElevation = getTotalElevationClimbed(MOUNTAINS, climbedIds)
-  const countries = getCountriesClimbedCount(MOUNTAINS, climbedIds)
-  const continents = getContinentsClimbedCount(MOUNTAINS, climbedIds)
+  // collections stay curated-only (no peakIds mutation for custom peaks), but
+  // every stat below should count anything the user's tracking, home-grown or not
+  const allMountains = useMemo(() => [...MOUNTAINS, ...customPeaks], [customPeaks])
+
+  const highest = getHighestClimbed(allMountains, climbedIds)
+  const totalElevation = getTotalElevationClimbed(allMountains, climbedIds)
+  const countries = getCountriesClimbedCount(allMountains, climbedIds)
+  const continents = getContinentsClimbedCount(allMountains, climbedIds)
 
   return (
     <div>
@@ -35,7 +42,7 @@ export function DashboardPage() {
         <StatCard
           label="Peaks climbed"
           value={climbedIds.size}
-          sublabel={`of ${MOUNTAINS.length} tracked`}
+          sublabel={`of ${allMountains.length} tracked`}
         />
         <StatCard
           label="Highest climbed"

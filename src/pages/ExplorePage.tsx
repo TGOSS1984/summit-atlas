@@ -3,10 +3,12 @@ import { MOUNTAINS } from '../data/mountains'
 import { COLLECTIONS } from '../data/collections'
 import { COLLECTIONS_BY_MOUNTAIN } from '../data/collectionsByMountain'
 import { useClimbs } from '../context/ClimbsContext'
+import { useCustomPeaks } from '../context/CustomPeaksContext'
 import { filterMountains, getCountryMaxElevations, type MountainFilters } from '../utils/filterMountains'
 import { MountainCard } from '../components/mountain/MountainCard'
 import { FilterChips } from '../components/explore/FilterChips'
 import { MountainDetailModal } from '../components/mountain/MountainDetailModal'
+import { AddPeakModal } from '../components/mountain/AddPeakModal'
 import type { Mountain } from '../types/mountain'
 import styles from './ExplorePage.module.css'
 
@@ -24,10 +26,9 @@ const COLLECTION_OPTIONS = [
   ...COLLECTIONS.map((c) => ({ id: c.id, label: c.name })),
 ]
 
-const COUNTRY_MAX_ELEVATIONS = getCountryMaxElevations(MOUNTAINS)
-
 export function ExplorePage() {
   const { climbedIds } = useClimbs()
+  const { customPeaks } = useCustomPeaks()
   const [filters, setFilters] = useState<MountainFilters>({
     search: '',
     continent: null,
@@ -35,8 +36,18 @@ export function ExplorePage() {
   })
   const [page, setPage] = useState(1)
   const [selectedMountain, setSelectedMountain] = useState<Mountain | null>(null)
+  const [showAddPeak, setShowAddPeak] = useState(false)
 
-  const filtered = useMemo(() => filterMountains(MOUNTAINS, filters, COLLECTIONS), [filters])
+  // custom peaks fold straight into the same browsable set - filters,
+  // pagination and the max-elevation lookup below all just see one array
+  const allMountains = useMemo(() => [...MOUNTAINS, ...customPeaks], [customPeaks])
+
+  const countryMaxElevations = useMemo(() => getCountryMaxElevations(allMountains), [allMountains])
+
+  const filtered = useMemo(
+    () => filterMountains(allMountains, filters, COLLECTIONS),
+    [allMountains, filters],
+  )
 
   const pageCount = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE))
   const currentPage = Math.min(page, pageCount)
@@ -49,7 +60,12 @@ export function ExplorePage() {
 
   return (
     <div>
-      <h1>Explore</h1>
+      <div className={styles.pageHeader}>
+        <h1>Explore</h1>
+        <button type="button" className={styles.addPeakButton} onClick={() => setShowAddPeak(true)}>
+          + Add a peak
+        </button>
+      </div>
 
       <input
         type="search"
@@ -85,7 +101,7 @@ export function ExplorePage() {
           >
             <MountainCard
               mountain={mountain}
-              countryMaxElevation={COUNTRY_MAX_ELEVATIONS.get(mountain.country)}
+              countryMaxElevation={countryMaxElevations.get(mountain.country)}
               collections={COLLECTIONS_BY_MOUNTAIN.get(mountain.id)}
               climbed={climbedIds.has(mountain.id)}
             />
@@ -120,6 +136,8 @@ export function ExplorePage() {
           onClose={() => setSelectedMountain(null)}
         />
       )}
+
+      {showAddPeak && <AddPeakModal onClose={() => setShowAddPeak(false)} />}
     </div>
   )
 }

@@ -192,3 +192,22 @@
   font-size: 13px;
   color: var(--text-tertiary);
 }
+
+.customActions {
+  margin-top: 20px;
+  padding-top: 18px;
+  border-top: 1px solid var(--border);
+}
+
+.removeCustomButton {
+  border: none;
+  background: none;
+  color: var(--text-tertiary);
+  font-size: 12.5px;
+  cursor: pointer;
+  padding: 0;
+}
+
+.removeCustomButton:hover {
+  color: var(--red);
+}

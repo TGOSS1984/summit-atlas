@@ -63,3 +63,29 @@
   opacity: 0.4;
   cursor: default;
 }
+
+/*additions for log own peak modal*/
+
+.pageHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.addPeakButton {
+  border: none;
+  background: var(--accent);
+  color: var(--accent-ink);
+  border-radius: var(--radius-sm);
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.addPeakButton:hover {
+  background: var(--accent-bright);
+}
