@@ -14,6 +14,37 @@
   background: var(--bg-elevated);
 }
 
+/* glow on climbed markers only - two stacked drop-shadows (tight + wide)
+   rather than one, same double-layer trick peakbook uses for its own glow,
+   just as filter: drop-shadow() instead of box-shadow since this targets an
+   SVG path, not a DOM div */
+.climbedMarker {
+  filter: drop-shadow(0 0 3px var(--green)) drop-shadow(0 0 8px var(--green));
+}
+
+.showToggle {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 8px 14px;
+  font-size: 12.5px;
+  color: var(--text-secondary);
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  user-select: none;
+}
+
+.showToggle input {
+  accent-color: var(--accent);
+}
+
 .legend {
   position: absolute;
   bottom: 16px;
@@ -55,6 +86,14 @@
     height: 60vh;
     min-height: 340px;
     margin-top: 12px;
+  }
+
+  .showToggle {
+    top: 10px;
+    right: 10px;
+    gap: 6px;
+    padding: 6px 10px;
+    font-size: 11.5px;
   }
 
   .legend {

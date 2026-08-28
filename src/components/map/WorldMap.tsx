@@ -12,9 +12,22 @@ import { MountainDetailModal } from '../mountain/MountainDetailModal'
 import type { Mountain } from '../../types/mountain'
 import styles from './WorldMap.module.css'
 
+// CARTO started requiring a free API key on these raster endpoints from
+// 26 Aug 2026 - see .env.example for where to get one. a missing key doesn't
+// break the map, CARTO just stamps a "API key required" watermark on the
+// tiles, but this console warning is a faster signal than squinting at the
+// map trying to work out why it looks off
+const CARTO_API_KEY = import.meta.env.VITE_CARTO_API_KEY
+
+if (!CARTO_API_KEY) {
+  console.warn(
+    'VITE_CARTO_API_KEY is not set - map tiles will show a "API key required" watermark. See .env.example.',
+  )
+}
+
 const TILE_URLS = {
-  light: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
-  dark: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+  light: `https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png?key=${CARTO_API_KEY ?? ''}`,
+  dark: `https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png?key=${CARTO_API_KEY ?? ''}`,
 }
 
 const TILE_ATTRIBUTION =
@@ -30,6 +43,9 @@ export function WorldMap() {
   const { unit } = useUnit()
   const { customPeaks } = useCustomPeaks()
   const [selectedMountain, setSelectedMountain] = useState<Mountain | null>(null)
+  // "map pagination" in Tom's shorthand - defaults to true (show everything)
+  // to match the map's existing behaviour, unchecking narrows to climbed-only
+  const [showUnclimbed, setShowUnclimbed] = useState(true)
   const climbedColor = resolveToken('--green')
   const unclimbedColor = resolveToken('--text-tertiary')
 
@@ -42,12 +58,14 @@ export function WorldMap() {
     [customPeaks],
   )
 
+  const visibleMountains = plottableMountains.filter((m) => showUnclimbed || climbedIds.has(m.id))
+
   return (
     <div className={styles.mapWrapper}>
       <MapContainer center={[20, 10]} zoom={2} minZoom={2} className={styles.map} worldCopyJump>
         <TileLayer key={theme} url={TILE_URLS[theme]} attribution={TILE_ATTRIBUTION} />
 
-        {plottableMountains.map((mountain) => {
+        {visibleMountains.map((mountain) => {
           const climbed = climbedIds.has(mountain.id)
           return (
             <CircleMarker
@@ -59,6 +77,10 @@ export function WorldMap() {
                 fillColor: climbed ? climbedColor : unclimbedColor,
                 fillOpacity: climbed ? 0.85 : 0.55,
                 weight: 1.5,
+                // glow only applies to climbed peaks - see .climbedMarker in
+                // WorldMap.module.css. className is a real Leaflet PathOptions
+                // field, gets set straight onto the marker's SVG element
+                className: climbed ? styles.climbedMarker : undefined,
               }}
             >
               <Popup>
@@ -89,6 +111,18 @@ export function WorldMap() {
           )
         })}
       </MapContainer>
+
+      {/* top-right, not top-left - Leaflet's default zoom control already
+          claims top-left, don't want this sitting on top of it. independent
+          of the legend below - that one's staying put at bottom-left */}
+      <label className={styles.showToggle}>
+        <input
+          type="checkbox"
+          checked={showUnclimbed}
+          onChange={(e) => setShowUnclimbed(e.target.checked)}
+        />
+        Show unclimbed peaks
+      </label>
 
       <div className={styles.legend}>
         <span className={styles.legendItem}>
