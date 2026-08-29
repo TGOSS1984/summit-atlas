@@ -5637,4 +5637,15 @@ export const MOUNTAINS_NORTH_AMERICA: Mountain[] = [
     lat: 20.7097,
     lng: -156.2533,
   },
+  {
+    id: 'diamond-head',
+    name: 'Diamond Head',
+    elevation: 232,
+    country: 'United States',
+    flag: '🇺🇸',
+    continent: 'North America',
+    range: 'Hawaiian Volcanic Chain',
+    lat: 21.262,
+    lng: -157.8055,
+  },
 ]
