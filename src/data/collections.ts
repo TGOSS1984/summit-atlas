@@ -718,4 +718,19 @@ export const COLLECTIONS: Collection[] = [
       'mount-hector', 'mount-edziza', 'mount-louis', 'slesse',
     ],
   },
+    {
+    id: 'southeast-asia',
+    name: 'Southeast Asian Volcanoes & Peaks',
+    tagline: 'The volcanic giants and highlands of Indonesia, the Philippines and the mainland',
+    colorToken: 'gold',
+    peakIds: [
+      'kinabalu', 'rinjani', 'fansipan',
+      'slamet', 'sumbing', 'lawu', 'merbabu',
+      'agung', 'gede', 'merapi', 'tambora',
+      'ijen', 'bromo', 'batur', 'trusmadi',
+      'tahan', 'pulag', 'mayon', 'pinatubo',
+      'taal', 'putaleng', 'lang-biang', 'chiang-dao',
+      'natma-taung', 'popa', 'adams-peak-lk',
+    ],
+  },
 ]
