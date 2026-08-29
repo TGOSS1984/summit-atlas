@@ -53,7 +53,13 @@ export const COLLECTIONS: Collection[] = [
     name: 'Alpine Classics',
     tagline: 'Iconic peaks of the European Alps',
     colorToken: 'green',
-    peakIds: ['mont-blanc', 'matterhorn', 'eiger'],
+    peakIds: [
+      'mont-blanc', 'monte-rosa', 'dom', 'weisshorn',
+      'matterhorn', 'grand-combin-grafeneire', 'finsteraarhorn', 'grandes-jorasses-pointe-walker',
+      'jungfrau', 'monch', 'gran-paradiso', 'piz-bernina',
+      'eiger', 'ortler', 'grossglockner', 'marmolada',
+      'zugspitze', 'triglav',
+    ],
   },
   {
     id: 'wainwrights',

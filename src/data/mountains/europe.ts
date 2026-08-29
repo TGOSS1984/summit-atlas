@@ -11677,4 +11677,27 @@ export const MOUNTAINS_EUROPE: Mountain[] = [
     lat: 46.357,
     lng: 14.536,
   },
+    {
+    id: 'ortler',
+    name: 'Ortler',
+    elevation: 3905,
+    country: 'Italy',
+    flag: '🇮🇹',
+    continent: 'Europe',
+    range: 'Alps',
+    lat: 46.5089,
+    lng: 10.5447,
+  },
+  {
+    id: 'marmolada',
+    name: 'Marmolada',
+    elevation: 3343,
+    country: 'Italy',
+    flag: '🇮🇹',
+    continent: 'Europe',
+    range: 'Dolomites',
+    lat: 46.4344,
+    lng: 11.8514,
+  },
+  
 ]
