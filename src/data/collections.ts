@@ -650,4 +650,23 @@ export const COLLECTIONS: Collection[] = [
       'mount-cargill', 'mount-iron',
     ],
   },
+    {
+    id: 'australia-pacific',
+    name: 'Australia & the Pacific',
+    tagline: 'From the Snowy Mountains to the volcanic giants of New Guinea',
+    colorToken: 'red',
+    peakIds: [
+      'mount-townsend', 'kosciuszko', 'twynam', 'bogong',
+      'feathertop', 'bimberi', 'hotham', 'buller-au',
+      'the-horn-buffalo', 'bartle-frere', 'legges-tor', 'barn-bluff',
+      'zeil', 'frenchmans-cap', 'woodroffe', 'mount-anne',
+      'barney', 'kunanyi', 'meharry', 'federation-peak',
+      'st-mary-peak', 'wollumbin', 'augustus', 'bluff-knoll',
+      'beerwah', 'tibrogargan', 'sonder', 'kata-tjuta',
+      'uluru', 'mount-gower', 'puncak-jaya', 'sumantri',
+      'ngga-pulu', 'mandala', 'puncak-trikora', 'victoria-png',
+      'hagen', 'wilhelm', 'giluwe', 'orohena',
+      'yasur',
+    ],
+  },
 ]
