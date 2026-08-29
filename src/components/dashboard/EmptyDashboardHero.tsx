@@ -1,6 +1,5 @@
 import { useNavigate } from 'react-router-dom'
 import { useClimbs } from '../../context/ClimbsContext'
-import { SummitPinIcon } from '../common/SummitPinIcon'
 import styles from './EmptyDashboardHero.module.css'
 
 // shown instead of the stat grid when nothing's logged yet - same idea as
