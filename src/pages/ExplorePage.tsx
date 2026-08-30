@@ -4,7 +4,14 @@ import { COLLECTIONS } from '../data/collections'
 import { COLLECTIONS_BY_MOUNTAIN } from '../data/collectionsByMountain'
 import { useClimbs } from '../context/ClimbsContext'
 import { useCustomPeaks } from '../context/CustomPeaksContext'
-import { filterMountains, getCountryMaxElevations, type MountainFilters } from '../utils/filterMountains'
+import {
+  filterMountains,
+  getCountryMaxElevations,
+  sortMountains,
+  SORT_OPTIONS,
+  type MountainFilters,
+  type SortOption,
+} from '../utils/filterMountains'
 import { MountainCard } from '../components/mountain/MountainCard'
 import { FilterChips } from '../components/explore/FilterChips'
 import { MountainDetailModal } from '../components/mountain/MountainDetailModal'
@@ -41,6 +48,7 @@ export function ExplorePage() {
     collectionId: null,
     climbedStatus: null,
   })
+  const [sortBy, setSortBy] = useState<SortOption>('name-asc')
   const [page, setPage] = useState(1)
   const [selectedMountain, setSelectedMountain] = useState<Mountain | null>(null)
   const [showAddPeak, setShowAddPeak] = useState(false)
@@ -56,12 +64,19 @@ export function ExplorePage() {
     [allMountains, filters, climbedIds],
   )
 
-  const pageCount = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE))
+  const sorted = useMemo(() => sortMountains(filtered, sortBy), [filtered, sortBy])
+
+  const pageCount = Math.max(1, Math.ceil(sorted.length / PAGE_SIZE))
   const currentPage = Math.min(page, pageCount)
-  const visible = filtered.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE)
+  const visible = sorted.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE)
 
   function updateFilters(next: Partial<MountainFilters>) {
     setFilters((prev) => ({ ...prev, ...next }))
+    setPage(1)
+  }
+
+  function updateSort(next: SortOption) {
+    setSortBy(next)
     setPage(1)
   }
 
@@ -96,9 +111,24 @@ export function ExplorePage() {
       </div>
 
       <div className={styles.countRow}>
-        <p className={styles.count}>
-          {filtered.length} peak{filtered.length === 1 ? '' : 's'}
-        </p>
+        <div className={styles.countAndSort}>
+          <p className={styles.count}>
+            {filtered.length} peak{filtered.length === 1 ? '' : 's'}
+          </p>
+
+          <select
+            className={styles.sortSelect}
+            value={sortBy}
+            onChange={(e) => updateSort(e.target.value as SortOption)}
+            aria-label="Sort peaks"
+          >
+            {SORT_OPTIONS.map((option) => (
+              <option key={option.id} value={option.id}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+        </div>
 
         {/* explains the two dashed lines on each card's ridge graphic - easy
             to miss otherwise, and easy to mix up which line means what */}

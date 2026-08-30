@@ -84,3 +84,26 @@ export function getCollectionsByMountainId(collections: Collection[]): Map<strin
   }
   return map
 }
+
+export type SortOption = 'name-asc' | 'elevation-desc' | 'elevation-asc'
+
+export const SORT_OPTIONS: { id: SortOption; label: string }[] = [
+  { id: 'name-asc', label: 'A–Z' },
+  { id: 'elevation-desc', label: 'Elevation: High to low' },
+  { id: 'elevation-asc', label: 'Elevation: Low to high' },
+]
+
+// separate from filterMountains() on purpose - filtering narrows the set,
+// sorting just reorders it, and keeping them as two small pure functions
+// is easier to test and reason about than one function doing both
+export function sortMountains(mountains: Mountain[], sortBy: SortOption): Mountain[] {
+  const sorted = [...mountains]
+  switch (sortBy) {
+    case 'name-asc':
+      return sorted.sort((a, b) => a.name.localeCompare(b.name))
+    case 'elevation-desc':
+      return sorted.sort((a, b) => b.elevation - a.elevation)
+    case 'elevation-asc':
+      return sorted.sort((a, b) => a.elevation - b.elevation)
+  }
+}
