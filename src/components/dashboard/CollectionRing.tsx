@@ -1,4 +1,6 @@
 import type { Collection } from '../../types/collection'
+import { CollectionIcon } from '../lists/CollectionIcon'
+import { COLLECTION_ICONS } from '../../data/collectionIcons'
 import styles from './CollectionRing.module.css'
 
 interface CollectionRingProps {
@@ -14,33 +16,44 @@ export function CollectionRing({ collection, climbedCount }: CollectionRingProps
   const total = collection.peakIds.length
   const percent = total === 0 ? 0 : climbedCount / total
   const offset = CIRCUMFERENCE * (1 - percent)
+  const icon = COLLECTION_ICONS[collection.id] ?? {
+    peaks: 'single' as const,
+    accent: 'none' as const,
+    color: 'var(--accent)',
+  }
 
   return (
     <div className={styles.ring}>
-      <svg width="72" height="72" viewBox="0 0 72 72">
-        <circle
-          cx="36"
-          cy="36"
-          r={RADIUS}
-          fill="none"
-          stroke="var(--border)"
-          strokeWidth={STROKE_WIDTH}
+      <div className={styles.ringVisual}>
+        <svg width="72" height="72" viewBox="0 0 72 72">
+          <circle
+            cx="36"
+            cy="36"
+            r={RADIUS}
+            fill="none"
+            stroke="var(--border)"
+            strokeWidth={STROKE_WIDTH}
+          />
+          <circle
+            cx="36"
+            cy="36"
+            r={RADIUS}
+            fill="none"
+            stroke={icon.color}
+            strokeWidth={STROKE_WIDTH}
+            strokeDasharray={CIRCUMFERENCE}
+            strokeDashoffset={offset}
+            strokeLinecap="round"
+            transform="rotate(-90 36 36)" // start the progress at 12 o'clock, not 3
+          />
+        </svg>
+        <CollectionIcon
+          peaks={icon.peaks}
+          accent={icon.accent}
+          className={styles.centerIcon}
+          style={{ color: icon.color }}
         />
-        <circle
-          cx="36"
-          cy="36"
-          r={RADIUS}
-          fill="none"
-          // colorToken names match the token names 1:1 (see collection.ts) so
-          // this can just interpolate straight into a var() reference
-          stroke={`var(--${collection.colorToken})`}
-          strokeWidth={STROKE_WIDTH}
-          strokeDasharray={CIRCUMFERENCE}
-          strokeDashoffset={offset}
-          strokeLinecap="round"
-          transform="rotate(-90 36 36)" // start the progress at 12 o'clock, not 3
-        />
-      </svg>
+      </div>
       <div className={styles.label}>
         <span className={styles.count}>
           {climbedCount}/{total}
