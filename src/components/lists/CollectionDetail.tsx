@@ -18,7 +18,11 @@ export function CollectionDetail({ collection, mountains, climbedIds }: Collecti
   const { unit } = useUnit()
   const wiki = getCollectionWikiExtract(collection.id)
   const missingCount = collection.peakIds.length - mountains.length
-  const icon = COLLECTION_ICONS[collection.id] ?? { peaks: 'single' as const, accent: 'none' as const }
+  const icon = COLLECTION_ICONS[collection.id] ?? {
+    peaks: 'single' as const,
+    accent: 'none' as const,
+    color: 'var(--accent)',
+  }
 
   const climbedCount = mountains.filter((m) => climbedIds.has(m.id)).length
   const total = mountains.length
@@ -59,10 +63,7 @@ export function CollectionDetail({ collection, mountains, climbedIds }: Collecti
         </div>
 
         <div className={styles.track}>
-          <div
-            className={styles.fill}
-            style={{ width: `${percent}%`, background: `var(--${collection.colorToken})` }}
-          />
+          <div className={styles.fill} style={{ width: `${percent}%`, background: icon.color }} />
         </div>
       </div>
 

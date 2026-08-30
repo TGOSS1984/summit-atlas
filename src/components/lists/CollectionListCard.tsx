@@ -19,7 +19,11 @@ export function CollectionListCard({
   onSelect,
 }: CollectionListCardProps) {
   const percent = total === 0 ? 0 : Math.round((climbed / total) * 100)
-  const icon = COLLECTION_ICONS[collection.id] ?? { peaks: 'single' as const, accent: 'none' as const }
+  const icon = COLLECTION_ICONS[collection.id] ?? {
+    peaks: 'single' as const,
+    accent: 'none' as const,
+    color: 'var(--accent)',
+  }
 
   return (
     <button type="button" className={active ? styles.cardActive : styles.card} onClick={onSelect}>
@@ -34,10 +38,7 @@ export function CollectionListCard({
       </div>
       <p className={styles.tagline}>{collection.tagline}</p>
       <div className={styles.track}>
-        <div
-          className={styles.fill}
-          style={{ width: `${percent}%`, background: `var(--${collection.colorToken})` }}
-        />
+        <div className={styles.fill} style={{ width: `${percent}%`, background: icon.color }} />
       </div>
       <p className={styles.progressLabel}>
         {climbed}/{total} climbed
