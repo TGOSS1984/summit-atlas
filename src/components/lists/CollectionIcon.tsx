@@ -125,16 +125,17 @@ interface CollectionIconProps {
   peaks: PeakShape
   accent: AccentGlyph
   className?: string
+  style?: React.CSSProperties
 }
 
 // Small mark for each collection - riffs on the Summit Pin favicon's
 // geometry (currentColor, simple line/shape forms) rather than a literal
 // reuse, so the Lists page reads as a family without every card looking
 // identical.
-export function CollectionIcon({ peaks, accent, className }: CollectionIconProps) {
+export function CollectionIcon({ peaks, accent, className, style }: CollectionIconProps) {
   const backOpacity = PEAK_BACK_OPACITY[peaks]
   return (
-    <svg viewBox="0 0 32 32" className={className ?? styles.icon} aria-hidden="true">
+    <svg viewBox="0 0 32 32" className={className ?? styles.icon} style={style} aria-hidden="true">
       {backOpacity ? (
         <>
           <path d={PEAK_PATHS[peaks].split('Z')[0] + 'Z'} fill="currentColor" opacity={backOpacity} />

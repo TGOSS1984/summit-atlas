@@ -1,4 +1,6 @@
 import type { Collection } from '../../types/collection'
+import { CollectionIcon } from './CollectionIcon'
+import { COLLECTION_ICONS } from '../../data/collectionIcons'
 import styles from './CollectionListCard.module.css'
 
 interface CollectionListCardProps {
@@ -17,11 +19,17 @@ export function CollectionListCard({
   onSelect,
 }: CollectionListCardProps) {
   const percent = total === 0 ? 0 : Math.round((climbed / total) * 100)
+  const icon = COLLECTION_ICONS[collection.id] ?? { peaks: 'single' as const, accent: 'none' as const }
 
   return (
     <button type="button" className={active ? styles.cardActive : styles.card} onClick={onSelect}>
       <div className={styles.header}>
-        <span className={styles.dot} style={{ background: `var(--${collection.colorToken})` }} />
+        <CollectionIcon
+          peaks={icon.peaks}
+          accent={icon.accent}
+          className={styles.icon}
+          style={{ color: `var(--${collection.colorToken})` }}
+        />
         <span className={styles.name}>{collection.name}</span>
       </div>
       <p className={styles.tagline}>{collection.tagline}</p>

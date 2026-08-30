@@ -6,12 +6,13 @@ import { getCollectionProgress } from '../utils/dashboardStats'
 import { getCollectionMountains } from '../utils/collectionMountains'
 import { CollectionListCard } from '../components/lists/CollectionListCard'
 import { CollectionDetail } from '../components/lists/CollectionDetail'
+import { Modal } from '../components/common/Modal'
 import styles from './ListsPage.module.css'
 
 export function ListsPage() {
   const { climbedIds } = useClimbs()
-  const [selectedId, setSelectedId] = useState(COLLECTIONS[0]?.id ?? null)
-  const selected = COLLECTIONS.find((c) => c.id === selectedId) ?? COLLECTIONS[0]
+  const [openId, setOpenId] = useState<string | null>(null)
+  const openCollection = COLLECTIONS.find((c) => c.id === openId) ?? null
 
   return (
     <div>
@@ -26,21 +27,21 @@ export function ListsPage() {
               collection={collection}
               climbed={climbed}
               total={total}
-              active={collection.id === selected?.id}
-              onSelect={() => setSelectedId(collection.id)}
+              active={collection.id === openId}
+              onSelect={() => setOpenId(collection.id)}
             />
           )
         })}
       </div>
 
-      {selected && (
-        <div className={styles.detail}>
+      {openCollection && (
+        <Modal onClose={() => setOpenId(null)}>
           <CollectionDetail
-            collection={selected}
-            mountains={getCollectionMountains(selected, MOUNTAINS)}
+            collection={openCollection}
+            mountains={getCollectionMountains(openCollection, MOUNTAINS)}
             climbedIds={climbedIds}
           />
-        </div>
+        </Modal>
       )}
     </div>
   )

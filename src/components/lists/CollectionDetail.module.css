@@ -1,13 +1,18 @@
-.panel {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 22px 24px;
+.hero {
+  margin: -28px -30px 0;
+  padding: 28px 30px 24px;
+  border-radius: var(--radius) var(--radius) 0 0;
+}
+
+.heroIcon {
+  width: 34px;
+  height: 34px;
 }
 
 .title {
-  margin: 0;
+  margin: 12px 0 0;
   font-family: var(--font-display);
+  font-size: 22px;
 }
 
 .tagline {
@@ -16,21 +21,60 @@
   font-size: 14px;
 }
 
+.facts {
+  display: flex;
+  gap: 28px;
+  margin-top: 18px;
+}
+
+.fact {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.factValue {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.factLabel {
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+.track {
+  height: 6px;
+  border-radius: 4px;
+  background: var(--border);
+  overflow: hidden;
+  margin-top: 16px;
+}
+
+.fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.body {
+  padding-top: 20px;
+}
+
 .description {
-  margin: 16px 0 20px;
-  padding-top: 16px;
-  border-top: 1px solid var(--border);
+  margin: 0 0 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border);
   font-size: 13.5px;
   color: var(--text-secondary);
 }
 
 .description p {
   margin: 0;
-}
-
-.noDescription {
-  font-style: italic;
-  color: var(--text-tertiary);
 }
 
 .wikiLink {

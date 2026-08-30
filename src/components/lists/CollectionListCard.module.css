@@ -29,10 +29,9 @@
   gap: 8px;
 }
 
-.dot {
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
+.icon {
+  width: 22px;
+  height: 22px;
   flex-shrink: 0;
 }
 
