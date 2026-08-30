@@ -6,13 +6,14 @@ import styles from './CollectionRing.module.css'
 interface CollectionRingProps {
   collection: Collection
   climbedCount: number
+  onSelect: () => void
 }
 
 const RADIUS = 28
 const STROKE_WIDTH = 5
 const CIRCUMFERENCE = 2 * Math.PI * RADIUS
 
-export function CollectionRing({ collection, climbedCount }: CollectionRingProps) {
+export function CollectionRing({ collection, climbedCount, onSelect }: CollectionRingProps) {
   const total = collection.peakIds.length
   const percent = total === 0 ? 0 : climbedCount / total
   const offset = CIRCUMFERENCE * (1 - percent)
@@ -23,7 +24,7 @@ export function CollectionRing({ collection, climbedCount }: CollectionRingProps
   }
 
   return (
-    <div className={styles.ring}>
+    <button type="button" className={styles.ring} onClick={onSelect}>
       <div className={styles.ringVisual}>
         <svg width="72" height="72" viewBox="0 0 72 72">
           <circle
@@ -60,6 +61,6 @@ export function CollectionRing({ collection, climbedCount }: CollectionRingProps
         </span>
         <span className={styles.name}>{collection.name}</span>
       </div>
-    </div>
+    </button>
   )
 }

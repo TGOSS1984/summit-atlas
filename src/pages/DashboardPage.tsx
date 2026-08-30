@@ -1,10 +1,11 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { MOUNTAINS } from '../data/mountains'
 import { COLLECTIONS } from '../data/collections'
 import { useClimbs } from '../context/ClimbsContext'
 import { useUnit } from '../context/UnitContext'
 import { useCustomPeaks } from '../context/CustomPeaksContext'
 import { formatElevation } from '../utils/units'
+import { getCollectionMountains } from '../utils/collectionMountains'
 import {
   getCollectionProgress,
   getContinentsClimbedCount,
@@ -22,12 +23,15 @@ import { ClimbsTimeline } from '../components/dashboard/ClimbsTimeline'
 import { DataControls } from '../components/dashboard/DataControls'
 import { DemoDataBanner } from '../components/dashboard/DemoDataBanner'
 import { EmptyDashboardHero } from '../components/dashboard/EmptyDashboardHero'
+import { Modal } from '../components/common/Modal'
+import { CollectionDetail } from '../components/lists/CollectionDetail'
 import styles from './DashboardPage.module.css'
 
 export function DashboardPage() {
   const { climbs, climbedIds } = useClimbs()
   const { unit } = useUnit()
   const { customPeaks } = useCustomPeaks()
+  const [openCollectionId, setOpenCollectionId] = useState<string | null>(null)
 
   // collections stay curated-only (no peakIds mutation for custom peaks), but
   // every stat below should count anything the user's tracking, home-grown or not
@@ -36,6 +40,8 @@ export function DashboardPage() {
   // one flattened, newest-first ascent list feeds both the per-year chart
   // and the all-climbs timeline below, so it's only built once per render
   const ascents = useMemo(() => getAllAscents(allMountains, climbs), [allMountains, climbs])
+
+  const openCollection = COLLECTIONS.find((c) => c.id === openCollectionId) ?? null
 
   // both hooks above have to run before this check - bailing out earlier
   // than that would break React's rules of hooks the moment someone hits
@@ -78,7 +84,14 @@ export function DashboardPage() {
       <div className={styles.ringGrid}>
         {COLLECTIONS.map((collection) => {
           const { climbed } = getCollectionProgress(collection, climbedIds)
-          return <CollectionRing key={collection.id} collection={collection} climbedCount={climbed} />
+          return (
+            <CollectionRing
+              key={collection.id}
+              collection={collection}
+              climbedCount={climbed}
+              onSelect={() => setOpenCollectionId(collection.id)}
+            />
+          )
         })}
       </div>
 
@@ -97,6 +110,16 @@ export function DashboardPage() {
 
       <h2 className={styles.sectionTitle}>Your data</h2>
       <DataControls />
+
+      {openCollection && (
+        <Modal onClose={() => setOpenCollectionId(null)}>
+          <CollectionDetail
+            collection={openCollection}
+            mountains={getCollectionMountains(openCollection, allMountains)}
+            climbedIds={climbedIds}
+          />
+        </Modal>
+      )}
     </div>
   )
 }
