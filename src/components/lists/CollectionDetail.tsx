@@ -51,7 +51,7 @@ export function CollectionDetail({ collection, mountains, climbedIds }: Collecti
 
         <div className={styles.facts}>
           <div className={styles.fact}>
-            <div className={styles.factValue} style={{ color: `var(--${collection.colorToken})` }}>
+            <div className={styles.factValue} style={{ color: icon.color }}>
               {climbedCount} of {total}
             </div>
             <div className={styles.factLabel}>Climbed</div>
