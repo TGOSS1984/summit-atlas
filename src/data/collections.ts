@@ -757,4 +757,11 @@ export const COLLECTIONS: Collection[] = [
       'wilson-peak',
     ],
   },
+    {
+    id: 'uk-ireland-highest',
+    name: 'UK & Ireland High Points',
+    tagline: 'The highest point in Scotland, Wales, England, Northern Ireland and Ireland',
+    colorToken: 'green',
+    peakIds: ['ben-nevis', 'snowdon', 'scafell-pike', 'slieve-donard', 'carrauntoohil'],
+  },
 ]
