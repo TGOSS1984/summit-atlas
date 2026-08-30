@@ -95,14 +95,9 @@ function Sidebar() {
   )
 }
 
-// sidebar disappears below the mobile breakpoint (see Layout.module.css), so
-// its brand mark and the two toggles need somewhere else to live - this bar
-// is the mobile-only stand-in, hidden entirely on desktop. still the plain
-// text-button version here - the segmented pill treatment above is desktop
-// sidebar only for now, mobile hasn't been asked for it yet
 function MobileTopBar() {
-  const { theme, toggleTheme } = useTheme()
-  const { unit, toggleUnit } = useUnit()
+  const { theme, setTheme } = useTheme()
+  const { unit, setUnit } = useUnit()
 
   return (
     <div className={styles.mobileTopBar}>
@@ -110,12 +105,40 @@ function MobileTopBar() {
         <SummitPinIcon className={styles.mobileBrandMark} />
         Summit Atlas
       </span>
-      <div className={styles.mobileToggles}>
-        <button className={styles.mobileToggle} onClick={toggleTheme}>
-          {theme === 'dark' ? 'light' : 'dark'}
+
+      <div className={styles.mobileToggleBar}>
+        <button
+          type="button"
+          className={unit === 'm' ? `${styles.mobileToggleBtn} ${styles.mobileToggleBtnActive}` : styles.mobileToggleBtn}
+          onClick={() => setUnit('m')}
+        >
+          m
         </button>
-        <button className={styles.mobileToggle} onClick={toggleUnit}>
-          {unit === 'm' ? 'ft' : 'm'}
+        <button
+          type="button"
+          className={unit === 'ft' ? `${styles.mobileToggleBtn} ${styles.mobileToggleBtnActive}` : styles.mobileToggleBtn}
+          onClick={() => setUnit('ft')}
+        >
+          ft
+        </button>
+        <span className={styles.mobileToggleDivider} aria-hidden="true" />
+        <button
+          type="button"
+          className={theme === 'light' ? `${styles.mobileToggleBtn} ${styles.mobileToggleBtnActive}` : styles.mobileToggleBtn}
+          onClick={() => setTheme('light')}
+          aria-label="Switch to light theme"
+          title="Light theme"
+        >
+          <SunIcon />
+        </button>
+        <button
+          type="button"
+          className={theme === 'dark' ? `${styles.mobileToggleBtn} ${styles.mobileToggleBtnActive}` : styles.mobileToggleBtn}
+          onClick={() => setTheme('dark')}
+          aria-label="Switch to dark theme"
+          title="Dark theme"
+        >
+          <MoonIcon />
         </button>
       </div>
     </div>
