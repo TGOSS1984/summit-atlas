@@ -1,9 +1,9 @@
 import type { Mountain } from '../../types/mountain'
 import type { Collection } from '../../types/collection'
 import { formatElevation } from '../../utils/units'
-import { buildRidgeSvg } from '../../utils/ridgeSvg'
 import { useUnit } from '../../context/UnitContext'
 import { FlagIcon } from '../common/FlagIcon'
+import { ProceduralMountainSvg } from './ProceduralMountainSvg'
 import styles from './MountainCard.module.css'
 
 interface MountainCardProps {
@@ -20,33 +20,10 @@ export function MountainCard({
   climbed = false,
 }: MountainCardProps) {
   const { unit } = useUnit()
-  const ridge = buildRidgeSvg(mountain, { countryMaxElevation })
-  const ridgeClassName = climbed ? styles.ridgeClimbed : styles.ridge
 
   return (
     <div className={styles.card}>
-      <svg className={ridgeClassName} viewBox={ridge.viewBox} preserveAspectRatio="none">
-        <path d={ridge.fillPath} className={styles.ridgeFill} />
-        <path d={ridge.strokePath} fill="none" className={styles.ridgeStroke} />
-        {ridge.worldLineY !== null && (
-          <line
-            x1={0}
-            y1={ridge.worldLineY}
-            x2={160}
-            y2={ridge.worldLineY}
-            className={styles.referenceLine}
-          />
-        )}
-        {ridge.countryLineY !== null && (
-          <line
-            x1={0}
-            y1={ridge.countryLineY}
-            x2={160}
-            y2={ridge.countryLineY}
-            className={styles.referenceLineCountry}
-          />
-        )}
-      </svg>
+      <ProceduralMountainSvg mountain={mountain} countryMaxElevation={countryMaxElevation} climbed={climbed} />
 
       <div className={styles.body}>
         <div className={styles.titleRow}>

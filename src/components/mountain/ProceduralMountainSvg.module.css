@@ -1,0 +1,30 @@
+.svg {
+  display: block;
+  width: 100%;
+  /* same footprint as the old ridge SVG (160x90, ~1.78:1) - this artwork's
+     1200x680 is ~1.76:1, close enough that the card layout doesn't shift */
+  height: 90px;
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  overflow: hidden;
+}
+
+.svgClimbed {
+  filter: drop-shadow(0 0 6px var(--green));
+}
+
+/* viewBox is ~7.5x wider than the old 160-unit one (1200 vs 160), so
+   stroke-width and dash sizing are scaled up to match the old line's
+   actual on-screen weight once this renders down to card size */
+.referenceLine {
+  stroke: var(--text-tertiary);
+  stroke-width: 3.5;
+  stroke-dasharray: 14 14;
+  opacity: 0.55;
+}
+
+.referenceLineCountry {
+  stroke: var(--gold);
+  stroke-width: 3.5;
+  stroke-dasharray: 14 14;
+  opacity: 0.55;
+}
