@@ -28,7 +28,7 @@ export function CollectionListCard({
           peaks={icon.peaks}
           accent={icon.accent}
           className={styles.icon}
-          style={{ color: `var(--${collection.colorToken})` }}
+          style={{ color: icon.color }}
         />
         <span className={styles.name}>{collection.name}</span>
       </div>

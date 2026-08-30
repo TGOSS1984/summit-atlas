@@ -40,7 +40,7 @@ export function CollectionDetail({ collection, mountains, climbedIds }: Collecti
           peaks={icon.peaks}
           accent={icon.accent}
           className={styles.heroIcon}
-          style={{ color: `var(--${collection.colorToken})` }}
+          style={{ color: icon.color }}
         />
         <h2 className={styles.title}>{collection.name}</h2>
         <p className={styles.tagline}>{collection.tagline}</p>
