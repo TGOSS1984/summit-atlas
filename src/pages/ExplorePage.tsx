@@ -48,7 +48,7 @@ export function ExplorePage() {
     collectionId: null,
     climbedStatus: null,
   })
-  const [sortBy, setSortBy] = useState<SortOption>('name-asc')
+  const [sortBy, setSortBy] = useState<SortOption>('elevation-desc')
   const [page, setPage] = useState(1)
   const [selectedMountain, setSelectedMountain] = useState<Mountain | null>(null)
   const [showAddPeak, setShowAddPeak] = useState(false)
