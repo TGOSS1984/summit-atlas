@@ -30,3 +30,26 @@
 .clearButton:hover {
   background: var(--card-hover);
 }
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.reloadButton {
+  flex-shrink: 0;
+  border: 1px solid var(--border-strong);
+  background: transparent;
+  color: var(--text-secondary);
+  border-radius: var(--radius-sm);
+  padding: 6px 14px;
+  font-size: 12.5px;
+  cursor: pointer;
+}
+
+.reloadButton:hover {
+  color: var(--text);
+  background: var(--card-hover);
+}

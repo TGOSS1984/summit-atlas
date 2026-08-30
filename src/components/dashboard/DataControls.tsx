@@ -4,7 +4,7 @@ import { exportClimbsFile, parseImportedFile } from '../../store/climbsStore'
 import styles from './DataControls.module.css'
 
 export function DataControls() {
-  const { climbs, climbedIds, replaceAll, loadDemoData } = useClimbs()
+  const { climbs, climbedIds, isDemoData, replaceAll, loadDemoData } = useClimbs()
   const [message, setMessage] = useState<string | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
@@ -22,15 +22,15 @@ export function DataControls() {
     }
   }
 
-  function handleLoadDemoData() {
-    // only bother asking if there's real data to lose - window.confirm is a
-    // blunt tool, fine for now, could swap for our own Modal later if it feels cheap
-    const hasRealData = climbedIds.size > 0
-    if (hasRealData && !window.confirm('This replaces your current climb data with sample data. Continue?')) {
-      return
+    function handleLoadDemoData() {
+    // only ask if there's real data to lose - reloading demo data over
+    // demo data (i.e. "give me a different random sample") needs no warning
+        const hasRealData = climbedIds.size > 0 && !isDemoData
+        if (hasRealData && !window.confirm('This replaces your current climb data with sample data. Continue?')) {
+        return
+        }
+        loadDemoData()
     }
-    loadDemoData()
-  }
 
   return (
     <div className={styles.controls}>

@@ -7,7 +7,7 @@ import {
   type ClimbsState,
 } from '../utils/climbs'
 import { loadClimbs, saveClimbs, loadIsDemo, saveIsDemo } from '../store/climbsStore'
-import { DEMO_CLIMBS } from '../data/demoClimbs'
+import { generateDemoClimbs } from '../data/demoClimbs'
 
 interface ClimbsContextValue {
   climbs: ClimbsState
@@ -57,7 +57,7 @@ export function ClimbsProvider({ children }: { children: ReactNode }) {
         setIsDemoData(false)
       },
       loadDemoData: () => {
-        setClimbs(DEMO_CLIMBS)
+        setClimbs(generateDemoClimbs())
         setIsDemoData(true)
       },
     }),
