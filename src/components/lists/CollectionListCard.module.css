@@ -1,7 +1,7 @@
 .card,
 .cardActive {
   text-align: left;
-  background: var(--card);
+  background: linear-gradient(135deg, color-mix(in srgb, var(--tint) 14%, var(--card)) 0%, var(--card) 55%);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 16px 18px;
@@ -15,12 +15,12 @@
 
 .card:hover {
   border-color: var(--border-strong);
-  background: var(--card-hover);
+  background: linear-gradient(135deg, color-mix(in srgb, var(--tint) 20%, var(--card-hover)) 0%, var(--card-hover) 55%);
 }
 
 .cardActive {
   border-color: var(--border-strong);
-  background: var(--card-hover);
+  background: linear-gradient(135deg, color-mix(in srgb, var(--tint) 20%, var(--card-hover)) 0%, var(--card-hover) 55%);
 }
 
 .header {

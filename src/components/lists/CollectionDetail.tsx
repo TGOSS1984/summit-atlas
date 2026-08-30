@@ -37,7 +37,7 @@ export function CollectionDetail({ collection, mountains, climbedIds }: Collecti
       <div
         className={styles.hero}
         style={{
-          background: `linear-gradient(160deg, color-mix(in srgb, var(--${collection.colorToken}) 18%, transparent), transparent 60%)`,
+          background: `linear-gradient(135deg, color-mix(in srgb, ${icon.color} 18%, transparent), transparent 60%)`,
         }}
       >
         <CollectionIcon

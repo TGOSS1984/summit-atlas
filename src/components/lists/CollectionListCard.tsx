@@ -26,7 +26,12 @@ export function CollectionListCard({
   }
 
   return (
-    <button type="button" className={active ? styles.cardActive : styles.card} onClick={onSelect}>
+    <button
+      type="button"
+      className={active ? styles.cardActive : styles.card}
+      onClick={onSelect}
+      style={{ '--tint': icon.color } as React.CSSProperties}
+    >
       <div className={styles.header}>
         <CollectionIcon
           peaks={icon.peaks}
