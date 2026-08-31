@@ -431,7 +431,7 @@ export const MOUNTAINS_AUSTRALIA: Mountain[] = [
     lng: 172.5453,
   },
   {
-    id: 'avalanche-peak',
+    id: 'avalanche-peak-nz',
     name: 'Avalanche Peak',
     elevation: 1833,
     country: 'New Zealand',

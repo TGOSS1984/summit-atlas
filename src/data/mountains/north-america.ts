@@ -1486,7 +1486,7 @@ export const MOUNTAINS_NORTH_AMERICA: Mountain[] = [
     lng: -72.8143,
   },
   {
-    id: 'black-mountain',
+    id: 'black-mountain-ky',
     name: 'Black Mountain',
     elevation: 1263,
     country: 'United States',
