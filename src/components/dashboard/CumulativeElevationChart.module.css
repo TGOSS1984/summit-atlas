@@ -1,0 +1,36 @@
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px 20px;
+}
+
+.chart {
+  width: 100%;
+  height: 140px;
+  display: block;
+}
+
+.area {
+  fill: var(--accent-soft);
+}
+
+.line {
+  stroke: var(--accent);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.total {
+  margin: 10px 0 0;
+  font-size: 12.5px;
+  color: var(--text-secondary);
+  text-align: right;
+}
+
+.empty {
+  margin: 0;
+  color: var(--text-tertiary);
+  font-size: 13px;
+}

@@ -161,3 +161,68 @@ export function getAltitudeBands(
     return { ...band, count }
   })
 }
+
+// --- dashboard v3 additions below (continent donut, cumulative elevation, activity heatmap, pace sparkline) ---
+
+export interface ContinentCount {
+  continent: string
+  count: number
+}
+
+// sorted largest-first so both the donut's stroke order and the legend
+// list read the same way, biggest slice first
+export function getContinentBreakdown(
+  mountains: Mountain[],
+  climbedIds: Set<string>,
+): ContinentCount[] {
+  const counts = new Map<string, number>()
+  for (const m of getClimbedMountains(mountains, climbedIds)) {
+    counts.set(m.continent, (counts.get(m.continent) ?? 0) + 1)
+  }
+  return [...counts.entries()]
+    .map(([continent, count]) => ({ continent, count }))
+    .sort((a, b) => b.count - a.count)
+}
+
+export interface CumulativePoint {
+  date: string
+  cumulative: number
+}
+
+// oldest-first running total, the opposite order from getAllAscents - a
+// cumulative chart reads left-to-right as "climbing up over time", so it
+// needs date-ascending rather than the timeline's newest-first order
+export function getCumulativeElevation(ascents: Ascent[]): CumulativePoint[] {
+  const sorted = [...ascents].sort((a, b) => a.date.localeCompare(b.date))
+  let running = 0
+  return sorted.map((a) => {
+    running += a.mountain.elevation
+    return { date: a.date, cumulative: running }
+  })
+}
+
+// keyed by calendar day rather than by ascent, so multiple climbs logged on
+// the same date collapse into one heatmap cell instead of the second one
+// silently overwriting the first
+export function getActivityByDay(ascents: Ascent[]): Map<string, number> {
+  const counts = new Map<string, number>()
+  for (const a of ascents) {
+    counts.set(a.date, (counts.get(a.date) ?? 0) + 1)
+  }
+  return counts
+}
+
+// last N calendar months' climb counts, oldest first - just enough shape
+// for a sparkline next to a stat card, not meant to be read as precise data
+export function getMonthlyPace(ascents: Ascent[], monthsBack = 12): number[] {
+  const now = new Date()
+  const buckets: number[] = new Array(monthsBack).fill(0)
+  for (const a of ascents) {
+    const d = new Date(a.date)
+    const monthsAgo = (now.getFullYear() - d.getFullYear()) * 12 + (now.getMonth() - d.getMonth())
+    if (monthsAgo >= 0 && monthsAgo < monthsBack) {
+      buckets[monthsBack - 1 - monthsAgo] += 1
+    }
+  }
+  return buckets
+}

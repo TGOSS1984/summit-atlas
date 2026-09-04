@@ -14,12 +14,16 @@ import {
   getTotalElevationClimbed,
   getAllAscents,
   getEverestMultiple,
+  getMonthlyPace,
 } from '../utils/dashboardStats'
 import { StatCard } from '../components/dashboard/StatCard'
 import { CollectionRing } from '../components/dashboard/CollectionRing'
 import { ClimbsPerYearChart } from '../components/dashboard/ClimbsPerYearChart'
 import { AltitudeBands } from '../components/dashboard/AltitudeBands'
 import { ClimbsTimeline } from '../components/dashboard/ClimbsTimeline'
+import { ContinentBreakdown } from '../components/dashboard/ContinentBreakdown'
+import { CumulativeElevationChart } from '../components/dashboard/CumulativeElevationChart'
+import { ActivityHeatmap } from '../components/dashboard/ActivityHeatmap'
 import { DataControls } from '../components/dashboard/DataControls'
 import { DemoDataBanner } from '../components/dashboard/DemoDataBanner'
 import { EmptyDashboardHero } from '../components/dashboard/EmptyDashboardHero'
@@ -37,8 +41,10 @@ export function DashboardPage() {
   // every stat below should count anything the user's tracking, home-grown or not
   const allMountains = useMemo(() => [...MOUNTAINS, ...customPeaks], [customPeaks])
 
-  // one flattened, newest-first ascent list feeds both the per-year chart
-  // and the all-climbs timeline below, so it's only built once per render
+  // one flattened, newest-first ascent list feeds the per-year chart, the
+  // all-climbs timeline, and now the continent donut / cumulative elevation
+  // chart / activity heatmap below - built once per render, everything else
+  // just re-sorts or re-buckets this same list rather than re-deriving it
   const ascents = useMemo(() => getAllAscents(allMountains, climbs), [allMountains, climbs])
 
   const openCollection = COLLECTIONS.find((c) => c.id === openCollectionId) ?? null
@@ -59,6 +65,7 @@ export function DashboardPage() {
   const totalElevation = getTotalElevationClimbed(allMountains, climbedIds)
   const countries = getCountriesClimbedCount(allMountains, climbedIds)
   const continents = getContinentsClimbedCount(allMountains, climbedIds)
+  const monthlyPace = getMonthlyPace(ascents)
 
   const heroSublabel = `${getEverestMultiple(totalElevation).toFixed(1)}× the height of Everest, stacked end to end`
 
@@ -69,7 +76,13 @@ export function DashboardPage() {
       <DemoDataBanner />
 
       <div className={styles.statGrid}>
-        <StatCard featured label="Peaks climbed" value={climbedIds.size} sublabel={heroSublabel} />
+        <StatCard
+          featured
+          label="Peaks climbed"
+          value={climbedIds.size}
+          sublabel={heroSublabel}
+          sparkline={monthlyPace}
+        />
         <StatCard
           label="Highest climbed"
           value={highest ? formatElevation(highest.elevation, unit) : '—'}
@@ -107,6 +120,20 @@ export function DashboardPage() {
           <AltitudeBands mountains={allMountains} climbedIds={climbedIds} unit={unit} />
         </div>
       </div>
+
+      <div className={styles.dashColumns}>
+        <div>
+          <h2 className={styles.sectionTitle}>Peaks by continent</h2>
+          <ContinentBreakdown mountains={allMountains} climbedIds={climbedIds} />
+        </div>
+        <div>
+          <h2 className={styles.sectionTitle}>Elevation climbed over time</h2>
+          <CumulativeElevationChart ascents={ascents} unit={unit} />
+        </div>
+      </div>
+
+      <h2 className={styles.sectionTitle}>Activity</h2>
+      <ActivityHeatmap ascents={ascents} />
 
       <h2 className={styles.sectionTitle}>Your data</h2>
       <DataControls />
