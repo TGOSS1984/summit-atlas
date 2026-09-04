@@ -140,9 +140,4 @@ Not deployed anywhere yet — this section is "what's needed," not "here's the l
 
 ## License
 
-<!-- TODO: haven't actually decided this yet. MIT is the obvious default for
-     something like this but want to think about it properly rather than
-     just picking it because everyone does. Pick one and drop the LICENSE
-     file in before this goes anywhere public. -->
-
-TBD.
+MIT — see [LICENSE](./LICENSE).
