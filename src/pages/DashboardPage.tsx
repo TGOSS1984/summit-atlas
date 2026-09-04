@@ -42,9 +42,9 @@ export function DashboardPage() {
   const allMountains = useMemo(() => [...MOUNTAINS, ...customPeaks], [customPeaks])
 
   // one flattened, newest-first ascent list feeds the per-year chart, the
-  // all-climbs timeline, and now the continent donut / cumulative elevation
-  // chart / activity heatmap below - built once per render, everything else
-  // just re-sorts or re-buckets this same list rather than re-deriving it
+  // all-climbs timeline, and the continent donut / cumulative elevation
+  // chart / activity heatmap - built once per render, everything else just
+  // re-sorts or re-buckets this same list rather than re-deriving it
   const ascents = useMemo(() => getAllAscents(allMountains, climbs), [allMountains, climbs])
 
   const openCollection = COLLECTIONS.find((c) => c.id === openCollectionId) ?? null
@@ -108,6 +108,12 @@ export function DashboardPage() {
         })}
       </div>
 
+      {/* one 2-column split for the whole rest of the dashboard now - "All
+          climbs" on the left (however tall it ends up being), every other
+          chart stacked together on the right. used to be two separate
+          dashColumns rows (timeline+per-year/altitude, then continent/
+          elevation as their own pair below) - Tom's call to consolidate so
+          nothing new lands "at the bottom" separately from its siblings */}
       <div className={styles.dashColumns}>
         <div>
           <h2 className={styles.sectionTitle}>All climbs</h2>
@@ -118,22 +124,14 @@ export function DashboardPage() {
           <ClimbsPerYearChart ascents={ascents} />
           <h2 className={styles.sectionTitle}>Altitude bands</h2>
           <AltitudeBands mountains={allMountains} climbedIds={climbedIds} unit={unit} />
-        </div>
-      </div>
-
-      <div className={styles.dashColumns}>
-        <div>
           <h2 className={styles.sectionTitle}>Peaks by continent</h2>
           <ContinentBreakdown mountains={allMountains} climbedIds={climbedIds} />
-        </div>
-        <div>
           <h2 className={styles.sectionTitle}>Elevation climbed over time</h2>
           <CumulativeElevationChart ascents={ascents} unit={unit} />
+          <h2 className={styles.sectionTitle}>Activity</h2>
+          <ActivityHeatmap ascents={ascents} />
         </div>
       </div>
-
-      <h2 className={styles.sectionTitle}>Activity</h2>
-      <ActivityHeatmap ascents={ascents} />
 
       <h2 className={styles.sectionTitle}>Your data</h2>
       <DataControls />
