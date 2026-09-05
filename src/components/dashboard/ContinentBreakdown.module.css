@@ -8,26 +8,34 @@
   gap: 20px;
 }
 
-.donut {
+.donutWrap {
+  position: relative;
   width: 130px;
   height: 130px;
   flex-shrink: 0;
 }
 
-.donut circle {
-  transition: stroke-dashoffset 0.3s ease;
+.centerLabel {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  pointer-events: none;
 }
 
 .centerValue {
   font-family: var(--font-display);
   font-size: 26px;
   font-weight: 600;
-  fill: var(--text);
+  color: var(--text);
 }
 
-.centerLabel {
+.centerSub {
   font-size: 10px;
-  fill: var(--text-tertiary);
+  color: var(--text-tertiary);
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
