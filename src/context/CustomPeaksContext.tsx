@@ -13,6 +13,7 @@ interface CustomPeaksContextValue {
   customPeaks: Mountain[]
   addPeak: (input: CustomPeakInput) => void
   removePeak: (id: string) => void
+  replaceAll: (state: CustomPeaksState) => void
 }
 
 const CustomPeaksContext = createContext<CustomPeaksContextValue | null>(null)
@@ -29,6 +30,9 @@ export function CustomPeaksProvider({ children }: { children: ReactNode }) {
       customPeaks,
       addPeak: (input) => setCustomPeaks((prev) => addCustomPeak(prev, createCustomPeak(input))),
       removePeak: (id) => setCustomPeaks((prev) => removeCustomPeakFromState(prev, id)),
+      // used by CloudSync to write a merged local+remote result back in one
+      // shot after sign-in, same as ClimbsContext's replaceAll
+      replaceAll: (state) => setCustomPeaks(state),
     }),
     [customPeaks],
   )

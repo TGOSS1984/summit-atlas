@@ -42,6 +42,7 @@ This is the global follow-up to **Summit Log UK**, which did the same thing but 
 - **Add your own peak** — private, client-side only, never touches the curated dataset or gets linked into a collection
 - **Demo data** — randomly generated each time you load it, not a fixed static set, so it doesn't look the same (or stay looking sparse) forever
 - **Export/import** your data as JSON, m/ft toggle, dark/light theme toggle, all persisted
+- **Sign in with Google (optional)** — syncs your climbs and custom peaks to Firestore so they follow you across devices. Fully optional; the app's `localStorage`-only behavior is unchanged if you never sign in, and unchanged again if you never set up a Firebase project at all
 
 ## Dataset
 
@@ -54,9 +55,10 @@ Collections live in `src/data/collections.ts` — each one is just `{ id, name, 
 ## Tech stack
 
 - **React 18 + TypeScript + Vite.** Went with React 18 over 19 to keep peer-dependency risk down against react-leaflet/react-router — wasn't worth the risk for whatever 19 offers on a solo project.
-- **Plain CSS + custom properties, no Tailwind, no styled-components.** Every color and font is a `var(--token)`, never a hardcoded value in a component. Means changing the whole palette or type pairing later is a one-file edit to `tokens.css`, not a re-implementation. Two known exceptions where this breaks down, both documented inline where they happen: Leaflet paints marker colors as raw SVG attributes rather than through the DOM style cascade, so the map page has to resolve the computed token value in JS instead; and favicon/app-icon files plus the `theme-color` meta tag are outside the CSS cascade entirely, so those hardcode hex values directly.
+- **Plain CSS + custom properties, no Tailwind, no styled-components.** Every color and font is a `var(--token)`, never a hardcoded value in a component. Means changing the whole palette or type pairing later is a one-file edit to `tokens.css`, not a re-implementation. Three known exceptions where this breaks down, all documented inline where they happen: Leaflet paints marker colors as raw SVG attributes rather than through the DOM style cascade, so the map page has to resolve the computed token value in JS instead; favicon/app-icon files plus the `theme-color` meta tag are outside the CSS cascade entirely, so those hardcode hex values directly; and the Google sign-in button is a fixed light pill per Google's own brand guidelines regardless of app theme.
 - **react-leaflet + Leaflet** for the map. Tiles are CARTO's Positron/Dark Matter basemaps.
 - **react-router-dom** for routing.
+- **firebase (optional)** — Google sign-in + Firestore, purely additive. With no config set the app behaves exactly as before, everything on `localStorage`. See Getting started below.
 - **Vitest** for tests — mostly pure-function utilities (ridge/stat/filter logic) plus one important one: a duplicate-id guard on the whole `MOUNTAINS` dataset (see Known Issues below for why that exists).
 - **tsx** as a dev dependency, used to run the two Wikipedia-fetch scripts directly without a separate compile step.
 
@@ -83,6 +85,8 @@ cp .env.example .env.local
 ```
 
 `.env.local` is gitignored — don't commit your key. The app still works without one, the map just shows CARTO's "API key required" watermark on the tiles.
+
+Google sign-in and cloud sync are optional too — if you want them, add a Firebase project's config to the six `VITE_FIREBASE_*` vars in the same `.env.local` (see `.env.example` for exactly what's needed, including the Firestore security rule). Skip it and the sidebar's sign-in button just tells you it's not configured yet — everything else works the same, `localStorage`-only.
 
 ```bash
 npm run dev
@@ -112,6 +116,7 @@ Keeping this section honestly rather than pretending everything went smoothly, b
 - **Two batches got described in chat but never actually landed in the data files.** The Cascade Volcanoes peaks (Adams, Baker, Glacier Peak, Jefferson, South Sister, Lassen) and three Andes & Patagonia peaks (Alpamayo, Cayambe, Torres del Paine) were referenced by their collections' `peakIds` but were just... missing from the actual mountain data, presumably lost somewhere in a big copy-paste. Only surfaced during a later full audit against peakbook's dataset. Restored both. Lesson: when a collection references a peak, that's not the same as confirming the peak actually made it into the file.
 - **A slugify bug mangled accented names.** Early version of the id-generation script didn't strip diacritics before slugifying, so names like "Mönch" turned into ids like `m-nch` instead of `monch`. Caught before it shipped, but only because I happened to eyeball the generated ids — not from an automated check.
 - **`<script>` tags don't execute when embedded in SVG via React/`dangerouslySetInnerHTML`.** Tried wiring in a self-contained procedurally-generated mountain SVG (had its whole generation algorithm as an inline `<script>`) directly into a card component. Browsers don't run scripts inserted via `innerHTML`, full stop — that's a security rule, not a React quirk. Had to port the entire generation algorithm into a real TS module that runs via `useMemo` and returns plain path/polygon data for JSX to render, instead of relying on the script executing itself.
+- **Cloud sync has no debounce and no offline queue yet.** Every climb/custom-peak change writes straight to Firestore on its own `useEffect`, and if `setDoc` fails (offline, permissions) it just logs to the console rather than retrying or telling the person anything went wrong. Fine at this scale and this is a solo project's Firestore usage, but worth hardening if it ever needs to feel bulletproof.
 - **A stray `position: relative` on a modal's hero section silently ate click events on the close button.** The hero rendered *after* the close button in the DOM and became a positioned box sitting on top of it. Looked completely fine visually — the X was right there — just didn't respond to clicks. Removed the unnecessary `position: relative` and gave the close button its own explicit `z-index` as a safety net so it can't happen again from some other future positioned element.
 
 ## Deploying
@@ -120,10 +125,11 @@ Not deployed anywhere yet — this section is "what's needed," not "here's the l
 
 **What you'll need set at the host level:**
 - `VITE_CARTO_API_KEY` — same key as local dev. Without it the map still works, just with CARTO's watermark.
+- `VITE_FIREBASE_*` (six vars, optional) — same Firebase config as local dev. Without them, sign-in and cloud sync just aren't offered; everything else is unaffected.
 
 **Build command:** `npm run build` (runs `tsc --noEmit` first, so a broken build fails the deploy rather than shipping type errors).
 **Output directory:** `dist/`
-**Framework:** Vite — any static host that can run an npm build script works (Vercel, Netlify, Cloudflare Pages, etc.). No server-side code anywhere, no API routes, no database — everything's client-side, `localStorage`-backed.
+**Framework:** Vite — any static host that can run an npm build script works (Vercel, Netlify, Cloudflare Pages, etc.). No server-side code of my own anywhere, no API routes. Firestore is the one exception to "everything's client-side, `localStorage`-backed" — it's Google's managed backend, not something this repo runs, and it's entirely optional.
 
 **Not done yet, worth doing before or shortly after a real deploy:**
 - No `vercel.json`/`netlify.toml` or CI build check committed yet — that's still its own separate piece of work.

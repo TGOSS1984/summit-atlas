@@ -74,11 +74,19 @@
   font-weight: 600;
 }
 
-/* single pill housing both the unit and theme switches - replaces the old
-   two stacked .themeToggle buttons. margin-top: auto still does the job of
-   pinning this to the bottom of the flex column */
-.toggleBar {
+/* holds the account area + toggle pill together, pinned to the bottom of
+   the sidebar as one group - margin-top: auto used to live on .toggleBar
+   directly, moved up here once the account area needed to sit above it */
+.sidebarFooter {
   margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* single pill housing both the unit and theme switches - replaces the old
+   two stacked .themeToggle buttons */
+.toggleBar {
   display: flex;
   align-items: stretch;
   padding: 3px;

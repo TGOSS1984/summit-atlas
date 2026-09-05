@@ -2,6 +2,7 @@ import { NavLink, Outlet } from 'react-router-dom'
 import { useTheme } from '../../context/ThemeContext'
 import { useUnit } from '../../context/UnitContext'
 import { SummitPinIcon } from '../common/SummitPinIcon'
+import { AccountArea } from './AccountArea'
 import styles from './Layout.module.css'
 
 const NAV_ITEMS = [
@@ -51,45 +52,47 @@ function Sidebar() {
         ))}
       </div>
 
-      {/* one pill, one settings row - used to be two plain buttons stacked
-          with margin-top: auto, which read as two unrelated controls sitting
-          oddly far apart. divider down the middle keeps unit and theme
-          visually grouped as "two switches, one control" rather than merging
-          them into a single four-state toggle, which would've been confusing */}
-      <div className={styles.toggleBar}>
-        <button
-          type="button"
-          className={unit === 'm' ? `${styles.toggleBtn} ${styles.toggleBtnActive}` : styles.toggleBtn}
-          onClick={() => setUnit('m')}
-        >
-          m
-        </button>
-        <button
-          type="button"
-          className={unit === 'ft' ? `${styles.toggleBtn} ${styles.toggleBtnActive}` : styles.toggleBtn}
-          onClick={() => setUnit('ft')}
-        >
-          ft
-        </button>
-        <span className={styles.toggleDivider} aria-hidden="true" />
-        <button
-          type="button"
-          className={theme === 'light' ? `${styles.toggleBtn} ${styles.toggleBtnActive}` : styles.toggleBtn}
-          onClick={() => setTheme('light')}
-          aria-label="Switch to light theme"
-          title="Light theme"
-        >
-          <SunIcon />
-        </button>
-        <button
-          type="button"
-          className={theme === 'dark' ? `${styles.toggleBtn} ${styles.toggleBtnActive}` : styles.toggleBtn}
-          onClick={() => setTheme('dark')}
-          aria-label="Switch to dark theme"
-          title="Dark theme"
-        >
-          <MoonIcon />
-        </button>
+      {/* account chip/sign-in button now sits above the toggle pill, both
+          pinned to the bottom of the sidebar as one group - margin-top: auto
+          moved onto this wrapper so adding the account area didn't leave it
+          floating in the middle of the nav column */}
+      <div className={styles.sidebarFooter}>
+        <AccountArea />
+        <div className={styles.toggleBar}>
+          <button
+            type="button"
+            className={unit === 'm' ? `${styles.toggleBtn} ${styles.toggleBtnActive}` : styles.toggleBtn}
+            onClick={() => setUnit('m')}
+          >
+            m
+          </button>
+          <button
+            type="button"
+            className={unit === 'ft' ? `${styles.toggleBtn} ${styles.toggleBtnActive}` : styles.toggleBtn}
+            onClick={() => setUnit('ft')}
+          >
+            ft
+          </button>
+          <span className={styles.toggleDivider} aria-hidden="true" />
+          <button
+            type="button"
+            className={theme === 'light' ? `${styles.toggleBtn} ${styles.toggleBtnActive}` : styles.toggleBtn}
+            onClick={() => setTheme('light')}
+            aria-label="Switch to light theme"
+            title="Light theme"
+          >
+            <SunIcon />
+          </button>
+          <button
+            type="button"
+            className={theme === 'dark' ? `${styles.toggleBtn} ${styles.toggleBtnActive}` : styles.toggleBtn}
+            onClick={() => setTheme('dark')}
+            aria-label="Switch to dark theme"
+            title="Dark theme"
+          >
+            <MoonIcon />
+          </button>
+        </div>
       </div>
     </nav>
   )
