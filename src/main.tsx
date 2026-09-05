@@ -6,6 +6,7 @@ import { UnitProvider } from './context/UnitContext'
 import { AuthProvider } from './context/AuthContext'
 import { ClimbsProvider } from './context/ClimbsContext'
 import { CustomPeaksProvider } from './context/CustomPeaksContext'
+import { ResumeProvider } from './context/ResumeContext'
 import './styles/tokens.css'
 import './styles/global.css'
 import 'flag-icons/css/flag-icons.min.css'
@@ -17,7 +18,9 @@ createRoot(document.getElementById('root')!).render(
         <AuthProvider>
           <ClimbsProvider>
             <CustomPeaksProvider>
-              <App />
+              <ResumeProvider>
+                <App />
+              </ResumeProvider>
             </CustomPeaksProvider>
           </ClimbsProvider>
         </AuthProvider>

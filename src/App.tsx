@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { Layout } from './components/layout/Layout'
 import { CloudSync } from './components/system/CloudSync'
+import { PrintResume } from './components/resume/PrintResume'
 import { DashboardPage } from './pages/DashboardPage'
 import { ExplorePage } from './pages/ExplorePage'
 import { MapPage } from './pages/MapPage'
@@ -10,6 +11,7 @@ function App() {
   return (
     <BrowserRouter>
       <CloudSync />
+      <PrintResume />
       <Routes>
         <Route element={<Layout />}>
           <Route path="/" element={<DashboardPage />} />

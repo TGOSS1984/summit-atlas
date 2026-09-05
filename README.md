@@ -43,6 +43,7 @@ This is the global follow-up to **Summit Log UK**, which did the same thing but 
 - **Demo data** — randomly generated each time you load it, not a fixed static set, so it doesn't look the same (or stay looking sparse) forever
 - **Export/import** your data as JSON, m/ft toggle, dark/light theme toggle, all persisted
 - **Sign in with Google (optional)** — syncs your climbs and custom peaks to Firestore so they follow you across devices. Fully optional; the app's `localStorage`-only behavior is unchanged if you never sign in, and unchanged again if you never set up a Firebase project at all
+- **Climbing résumé** — a builder for skills, courses/certifications, and per-peak highlight bullets, exported as a clean PDF via the browser's own print dialog (no PDF library — a dedicated print stylesheet does the formatting). Syncs to the cloud alongside climbs/custom peaks if you're signed in
 
 ## Dataset
 
@@ -55,7 +56,7 @@ Collections live in `src/data/collections.ts` — each one is just `{ id, name, 
 ## Tech stack
 
 - **React 18 + TypeScript + Vite.** Went with React 18 over 19 to keep peer-dependency risk down against react-leaflet/react-router — wasn't worth the risk for whatever 19 offers on a solo project.
-- **Plain CSS + custom properties, no Tailwind, no styled-components.** Every color and font is a `var(--token)`, never a hardcoded value in a component. Means changing the whole palette or type pairing later is a one-file edit to `tokens.css`, not a re-implementation. Three known exceptions where this breaks down, all documented inline where they happen: Leaflet paints marker colors as raw SVG attributes rather than through the DOM style cascade, so the map page has to resolve the computed token value in JS instead; favicon/app-icon files plus the `theme-color` meta tag are outside the CSS cascade entirely, so those hardcode hex values directly; and the Google sign-in button is a fixed light pill per Google's own brand guidelines regardless of app theme.
+- **Plain CSS + custom properties, no Tailwind, no styled-components.** Every color and font is a `var(--token)`, never a hardcoded value in a component. Means changing the whole palette or type pairing later is a one-file edit to `tokens.css`, not a re-implementation. Four known exceptions where this breaks down, all documented inline where they happen: Leaflet paints marker colors as raw SVG attributes rather than through the DOM style cascade, so the map page has to resolve the computed token value in JS instead; favicon/app-icon files plus the `theme-color` meta tag are outside the CSS cascade entirely, so those hardcode hex values directly; the Google sign-in button is a fixed light pill per Google's own brand guidelines regardless of app theme; and the printable résumé page is a fixed light/paper palette on purpose, independent of whatever theme's active on screen.
 - **react-leaflet + Leaflet** for the map. Tiles are CARTO's Positron/Dark Matter basemaps.
 - **react-router-dom** for routing.
 - **firebase (optional)** — Google sign-in + Firestore, purely additive. With no config set the app behaves exactly as before, everything on `localStorage`. See Getting started below.

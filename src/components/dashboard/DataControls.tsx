@@ -1,11 +1,13 @@
 import { useRef, useState, type ChangeEvent } from 'react'
 import { useClimbs } from '../../context/ClimbsContext'
 import { exportClimbsFile, parseImportedFile } from '../../store/climbsStore'
+import { ResumeBuilderModal } from '../resume/ResumeBuilderModal'
 import styles from './DataControls.module.css'
 
 export function DataControls() {
   const { climbs, climbedIds, isDemoData, replaceAll, loadDemoData } = useClimbs()
   const [message, setMessage] = useState<string | null>(null)
+  const [resumeOpen, setResumeOpen] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   async function handleImport(e: ChangeEvent<HTMLInputElement>) {
@@ -43,6 +45,9 @@ export function DataControls() {
       <button type="button" className={styles.button} onClick={handleLoadDemoData}>
         Load demo data
       </button>
+      <button type="button" className={styles.button} onClick={() => setResumeOpen(true)}>
+        Build résumé
+      </button>
       <input
         ref={fileInputRef}
         type="file"
@@ -51,6 +56,7 @@ export function DataControls() {
         className={styles.hiddenInput}
       />
       {message && <p className={styles.message}>{message}</p>}
+      {resumeOpen && <ResumeBuilderModal onClose={() => setResumeOpen(false)} />}
     </div>
   )
 }

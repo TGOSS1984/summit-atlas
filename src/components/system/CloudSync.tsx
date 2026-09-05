@@ -3,31 +3,36 @@ import { doc, onSnapshot, setDoc, type DocumentReference } from 'firebase/firest
 import { useAuth } from '../../context/AuthContext'
 import { useClimbs } from '../../context/ClimbsContext'
 import { useCustomPeaks } from '../../context/CustomPeaksContext'
+import { useResume } from '../../context/ResumeContext'
 import { getFirebaseDb } from '../../lib/firebase'
-import { mergeClimbs, mergeCustomPeaks } from '../../utils/cloudMerge'
+import { mergeClimbs, mergeCustomPeaks, mergeResume } from '../../utils/cloudMerge'
+import { sanitizeResume } from '../../store/resumeStore'
 import type { ClimbsState } from '../../utils/climbs'
 import type { Mountain } from '../../types/mountain'
+import type { Resume } from '../../types/resume'
 
 interface CloudDoc {
   climbs?: ClimbsState
   custom?: Mountain[]
+  resume?: Resume
 }
 
-// renders nothing - sits inside AuthProvider/ClimbsProvider/CustomPeaksProvider
-// and keeps Firestore + localStorage converged. kept as its own component
-// rather than folded into AuthContext so Climbs/CustomPeaks stay independent
-// of Firebase entirely when signed out or unconfigured
+// renders nothing - sits inside AuthProvider/ClimbsProvider/CustomPeaksProvider/
+// ResumeProvider and keeps Firestore + localStorage converged. kept as its
+// own component rather than folded into AuthContext so Climbs/CustomPeaks/
+// Resume stay independent of Firebase entirely when signed out or unconfigured
 export function CloudSync() {
   const { user, configured } = useAuth()
   const { climbs, replaceAll: replaceClimbs } = useClimbs()
   const { customPeaks, replaceAll: replaceCustomPeaks } = useCustomPeaks()
+  const { resume, replaceAll: replaceResume } = useResume()
 
   // always-current local state without re-subscribing to onSnapshot on every
   // keystroke - the subscribe effect below only depends on [configured, user]
-  const localRef = useRef({ climbs, customPeaks })
+  const localRef = useRef({ climbs, customPeaks, resume })
   useEffect(() => {
-    localRef.current = { climbs, customPeaks }
-  }, [climbs, customPeaks])
+    localRef.current = { climbs, customPeaks, resume }
+  }, [climbs, customPeaks, resume])
 
   // last payload this tab itself wrote, so the snapshot listener can tell
   // "a change I just pushed echoing back" apart from "a real remote change"
@@ -54,9 +59,11 @@ export function CloudSync() {
         hasMergedOnSignIn.current = true
         const mergedClimbs = mergeClimbs(localRef.current.climbs, remote.climbs ?? {})
         const mergedCustom = mergeCustomPeaks(localRef.current.customPeaks, remote.custom ?? [])
+        const mergedResume = mergeResume(localRef.current.resume, sanitizeResume(remote.resume))
         replaceClimbs(mergedClimbs)
         replaceCustomPeaks(mergedCustom)
-        push(ref, mergedClimbs, mergedCustom)
+        replaceResume(mergedResume)
+        push(ref, mergedClimbs, mergedCustom, mergedResume)
         return
       }
 
@@ -64,6 +71,7 @@ export function CloudSync() {
       if (payload === lastPushed.current) return // our own write echoing back, not a real remote change
       if (remote.climbs) replaceClimbs(remote.climbs)
       if (remote.custom) replaceCustomPeaks(remote.custom)
+      if (remote.resume) replaceResume(sanitizeResume(remote.resume))
     })
 
     return unsubscribe
@@ -71,16 +79,21 @@ export function CloudSync() {
   }, [configured, user])
 
   // push local edits up once signed in and the initial merge has happened -
-  // TODO: fires on every climbs/customPeaks change with no debounce, fine at
-  // this data size but worth revisiting if logging climbs starts feeling
-  // laggy on a slow connection
+  // TODO: fires on every climbs/customPeaks/resume change with no debounce,
+  // fine at this data size but worth revisiting if logging climbs starts
+  // feeling laggy on a slow connection
   useEffect(() => {
     if (!configured || !user || !hasMergedOnSignIn.current) return
-    push(doc(getFirebaseDb(), 'logbooks', user.uid), climbs, customPeaks)
-  }, [configured, user, climbs, customPeaks])
+    push(doc(getFirebaseDb(), 'logbooks', user.uid), climbs, customPeaks, resume)
+  }, [configured, user, climbs, customPeaks, resume])
 
-  function push(ref: DocumentReference, climbsToPush: ClimbsState, customToPush: Mountain[]) {
-    const payload: CloudDoc = { climbs: climbsToPush, custom: customToPush }
+  function push(
+    ref: DocumentReference,
+    climbsToPush: ClimbsState,
+    customToPush: Mountain[],
+    resumeToPush: Resume,
+  ) {
+    const payload: CloudDoc = { climbs: climbsToPush, custom: customToPush, resume: resumeToPush }
     lastPushed.current = JSON.stringify(payload)
     setDoc(ref, payload).catch((err) => console.error('Summit Atlas: cloud sync write failed', err))
   }
