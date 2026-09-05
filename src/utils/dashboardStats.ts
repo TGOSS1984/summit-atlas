@@ -187,17 +187,20 @@ export function getContinentBreakdown(
 export interface CumulativePoint {
   date: string
   cumulative: number
+  mountainName: string
 }
 
 // oldest-first running total, the opposite order from getAllAscents - a
 // cumulative chart reads left-to-right as "climbing up over time", so it
-// needs date-ascending rather than the timeline's newest-first order
+// needs date-ascending rather than the timeline's newest-first order.
+// carries the mountain name per point so a tooltip can say which climb
+// caused each jump, not just show the running number in isolation
 export function getCumulativeElevation(ascents: Ascent[]): CumulativePoint[] {
   const sorted = [...ascents].sort((a, b) => a.date.localeCompare(b.date))
   let running = 0
   return sorted.map((a) => {
     running += a.mountain.elevation
-    return { date: a.date, cumulative: running }
+    return { date: a.date, cumulative: running, mountainName: a.mountain.name }
   })
 }
 
