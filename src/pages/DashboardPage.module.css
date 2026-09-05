@@ -6,6 +6,13 @@
   margin-top: 24px;
 }
 
+/* sidebar's sign-in button/account chip doesn't fit the mobile top bar -
+   this is the mobile-only equivalent slot, hidden above 760px since the
+   sidebar already covers it there */
+.accountAreaMobile {
+  display: none;
+}
+
 .sectionTitle {
   margin-top: 40px;
 }
@@ -32,6 +39,11 @@
 }
 
 @media (max-width: 760px) {
+  .accountAreaMobile {
+    display: block;
+    margin-bottom: 18px;
+  }
+
   .statGrid {
     grid-template-columns: 1fr 1fr;
     gap: 12px;

@@ -27,6 +27,7 @@ import { ActivityHeatmap } from '../components/dashboard/ActivityHeatmap'
 import { DataControls } from '../components/dashboard/DataControls'
 import { DemoDataBanner } from '../components/dashboard/DemoDataBanner'
 import { EmptyDashboardHero } from '../components/dashboard/EmptyDashboardHero'
+import { AccountArea } from '../components/layout/AccountArea'
 import { Modal } from '../components/common/Modal'
 import { CollectionDetail } from '../components/lists/CollectionDetail'
 import styles from './DashboardPage.module.css'
@@ -55,6 +56,12 @@ export function DashboardPage() {
   if (climbedIds.size === 0) {
     return (
       <div>
+        {/* sidebar's sign-in button is desktop-only (no room in the mobile
+            top bar) - this slot mirrors peakbook's own account-area-mobile
+            placement, shown only below 760px via CSS */}
+        <div className={styles.accountAreaMobile}>
+          <AccountArea />
+        </div>
         <h1>Dashboard</h1>
         <EmptyDashboardHero />
       </div>
@@ -70,6 +77,9 @@ export function DashboardPage() {
 
   return (
     <div>
+      <div className={styles.accountAreaMobile}>
+        <AccountArea />
+      </div>
       <h1>Dashboard</h1>
 
       <DemoDataBanner />

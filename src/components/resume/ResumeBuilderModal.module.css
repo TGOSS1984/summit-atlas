@@ -11,6 +11,17 @@
   line-height: 1.5;
 }
 
+.demoNotice {
+  background: var(--accent-soft);
+  border: 1px solid var(--accent);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  margin: 0 0 18px;
+  font-size: 13px;
+  color: var(--text);
+  line-height: 1.5;
+}
+
 .form {
   display: flex;
   flex-direction: column;

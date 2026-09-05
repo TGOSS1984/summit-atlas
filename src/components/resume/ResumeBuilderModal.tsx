@@ -32,7 +32,7 @@ function formatDate(iso: string): string {
 
 export function ResumeBuilderModal({ onClose }: ResumeBuilderModalProps) {
   const { user } = useAuth()
-  const { climbs } = useClimbs()
+  const { climbs, isDemoData } = useClimbs()
   const { resume, replaceAll } = useResume()
   const { unit } = useUnit()
   const mountains = useAllMountains()
@@ -99,6 +99,14 @@ export function ResumeBuilderModal({ onClose }: ResumeBuilderModalProps) {
     <Modal onClose={onClose}>
       <h2 className={styles.title}>Climbing résumé</h2>
       <p className={styles.subtitle}>Skills, courses, and expedition highlights, exported as a clean PDF.</p>
+
+      {isDemoData && (
+        <p className={styles.demoNotice}>
+          You're browsing sample data, so this shows a sample résumé too — anything you type here
+          won't be saved. Load your own climbs first, or use{' '}
+          <strong>Save &amp; export PDF</strong> below to see what an export looks like.
+        </p>
+      )}
 
       <form className={styles.form} onSubmit={(e) => handleSubmit(e, false)}>
         <label className={styles.field}>
