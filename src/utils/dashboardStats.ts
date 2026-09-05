@@ -162,7 +162,7 @@ export function getAltitudeBands(
   })
 }
 
-// --- dashboard v3 additions below (continent donut, cumulative elevation, activity heatmap, pace sparkline) ---
+// --- dashboard v3 additions below (continent donut, cumulative elevation, activity heatmap) ---
 
 export interface ContinentCount {
   continent: string
@@ -212,17 +212,67 @@ export function getActivityByDay(ascents: Ascent[]): Map<string, number> {
   return counts
 }
 
-// last N calendar months' climb counts, oldest first - just enough shape
-// for a sparkline next to a stat card, not meant to be read as precise data
-export function getMonthlyPace(ascents: Ascent[], monthsBack = 12): number[] {
-  const now = new Date()
-  const buckets: number[] = new Array(monthsBack).fill(0)
+// --- dashboard v4 additions below (Recharts conversion: stacked per-year, elevation histogram) ---
+
+// one row per year, one numeric key per continent that had a climb that
+// year - exactly the shape Recharts' stacked <Bar> wants (each <Bar
+// dataKey="Europe" stackId="year" /> just reads its own key off each row).
+// continents with zero climbs in a given year simply have no key for that
+// year rather than an explicit 0 - Recharts treats a missing key the same
+// as 0 for stacking purposes
+export interface YearContinentCounts {
+  year: string
+  [continent: string]: number | string
+}
+
+export function getClimbsPerYearByContinent(ascents: Ascent[]): YearContinentCounts[] {
+  const byYear = new Map<string, Record<string, number>>()
   for (const a of ascents) {
-    const d = new Date(a.date)
-    const monthsAgo = (now.getFullYear() - d.getFullYear()) * 12 + (now.getMonth() - d.getMonth())
-    if (monthsAgo >= 0 && monthsAgo < monthsBack) {
-      buckets[monthsBack - 1 - monthsAgo] += 1
-    }
+    const year = a.date.slice(0, 4)
+    if (!byYear.has(year)) byYear.set(year, {})
+    const yearCounts = byYear.get(year)!
+    yearCounts[a.mountain.continent] = (yearCounts[a.mountain.continent] ?? 0) + 1
   }
-  return buckets
+  return [...byYear.entries()]
+    .map(([year, counts]) => ({ year, ...counts }))
+    .sort((a, b) => a.year.localeCompare(b.year))
+}
+
+export interface HistogramBin {
+  label: string
+  min: number
+  count: number
+}
+
+// fixed bin width in whichever unit is on display (same reasoning as the
+// altitude bands above - round numbers per unit, not a metric set run
+// through a converter), sized finer than Altitude Bands' 5 semantic bands
+// so this reads as a genuinely different, more granular view of the same
+// underlying elevations rather than a re-skin of the same chart
+export function getElevationHistogram(
+  mountains: Mountain[],
+  climbedIds: Set<string>,
+  unit: ElevationUnit,
+): HistogramBin[] {
+  const climbed = getClimbedMountains(mountains, climbedIds)
+  if (climbed.length === 0) return []
+
+  const binWidth = unit === 'ft' ? 1500 : 500
+  const elevationInUnit = (m: Mountain) => (unit === 'ft' ? metersToFeet(m.elevation) : m.elevation)
+  const maxElevation = Math.max(...climbed.map(elevationInUnit))
+  const binCount = Math.max(1, Math.ceil((maxElevation + 1) / binWidth))
+
+  const bins: HistogramBin[] = Array.from({ length: binCount }, (_, i) => ({
+    label: `${(i * binWidth).toLocaleString()}${unit === 'ft' ? 'ft' : 'm'}`,
+    min: i * binWidth,
+    count: 0,
+  }))
+
+  for (const m of climbed) {
+    const e = elevationInUnit(m)
+    const idx = Math.min(binCount - 1, Math.floor(e / binWidth))
+    bins[idx].count += 1
+  }
+
+  return bins
 }

@@ -14,7 +14,6 @@ import {
   getTotalElevationClimbed,
   getAllAscents,
   getEverestMultiple,
-  getMonthlyPace,
 } from '../utils/dashboardStats'
 import { StatCard } from '../components/dashboard/StatCard'
 import { CollectionRing } from '../components/dashboard/CollectionRing'
@@ -65,7 +64,6 @@ export function DashboardPage() {
   const totalElevation = getTotalElevationClimbed(allMountains, climbedIds)
   const countries = getCountriesClimbedCount(allMountains, climbedIds)
   const continents = getContinentsClimbedCount(allMountains, climbedIds)
-  const monthlyPace = getMonthlyPace(ascents)
 
   const heroSublabel = `${getEverestMultiple(totalElevation).toFixed(1)}× the height of Everest, stacked end to end`
 
@@ -76,13 +74,7 @@ export function DashboardPage() {
       <DemoDataBanner />
 
       <div className={styles.statGrid}>
-        <StatCard
-          featured
-          label="Peaks climbed"
-          value={climbedIds.size}
-          sublabel={heroSublabel}
-          sparkline={monthlyPace}
-        />
+        <StatCard featured label="Peaks climbed" value={climbedIds.size} sublabel={heroSublabel} />
         <StatCard
           label="Highest climbed"
           value={highest ? formatElevation(highest.elevation, unit) : '—'}
@@ -108,12 +100,6 @@ export function DashboardPage() {
         })}
       </div>
 
-      {/* one 2-column split for the whole rest of the dashboard now - "All
-          climbs" on the left (however tall it ends up being), every other
-          chart stacked together on the right. used to be two separate
-          dashColumns rows (timeline+per-year/altitude, then continent/
-          elevation as their own pair below) - Tom's call to consolidate so
-          nothing new lands "at the bottom" separately from its siblings */}
       <div className={styles.dashColumns}>
         <div>
           <h2 className={styles.sectionTitle}>All climbs</h2>
