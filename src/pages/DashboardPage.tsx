@@ -22,6 +22,7 @@ import { AltitudeBands } from '../components/dashboard/AltitudeBands'
 import { ClimbsTimeline } from '../components/dashboard/ClimbsTimeline'
 import { ContinentBreakdown } from '../components/dashboard/ContinentBreakdown'
 import { CumulativeElevationChart } from '../components/dashboard/CumulativeElevationChart'
+import { ElevationHistogram } from '../components/dashboard/ElevationHistogram'
 import { ActivityHeatmap } from '../components/dashboard/ActivityHeatmap'
 import { DataControls } from '../components/dashboard/DataControls'
 import { DemoDataBanner } from '../components/dashboard/DemoDataBanner'
@@ -110,6 +111,8 @@ export function DashboardPage() {
           <ClimbsPerYearChart ascents={ascents} />
           <h2 className={styles.sectionTitle}>Altitude bands</h2>
           <AltitudeBands mountains={allMountains} climbedIds={climbedIds} unit={unit} />
+          <h2 className={styles.sectionTitle}>Elevation distribution</h2>
+          <ElevationHistogram mountains={allMountains} climbedIds={climbedIds} unit={unit} />
           <h2 className={styles.sectionTitle}>Peaks by continent</h2>
           <ContinentBreakdown mountains={allMountains} climbedIds={climbedIds} />
           <h2 className={styles.sectionTitle}>Elevation climbed over time</h2>
