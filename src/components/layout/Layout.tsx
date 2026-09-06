@@ -4,6 +4,11 @@ import { useTheme } from '../../context/ThemeContext'
 import { useUnit } from '../../context/UnitContext'
 import { SummitPinIcon } from '../common/SummitPinIcon'
 import { FeedbackModal } from '../common/FeedbackModal'
+import { PeakPicker } from '../common/PeakPicker'
+import { MountainDetailModal } from '../mountain/MountainDetailModal'
+import { AddPeakModal } from '../mountain/AddPeakModal'
+import { COLLECTIONS_BY_MOUNTAIN } from '../../data/collectionsByMountain'
+import type { Mountain } from '../../types/mountain'
 import { AccountArea } from './AccountArea'
 import styles from './Layout.module.css'
 
@@ -16,10 +21,13 @@ const NAV_ITEMS = [
 
 export function Layout() {
   const [feedbackOpen, setFeedbackOpen] = useState(false)
+  const [pickerOpen, setPickerOpen] = useState(false)
+  const [selectedMountain, setSelectedMountain] = useState<Mountain | null>(null)
+  const [showAddPeak, setShowAddPeak] = useState(false)
 
   return (
     <div className={styles.app}>
-      <Sidebar />
+      <Sidebar onLogClimb={() => setPickerOpen(true)} />
       <MobileTopBar />
       <main className={styles.main}>
         <Outlet />
@@ -39,11 +47,36 @@ export function Layout() {
         <FeedbackIcon />
       </button>
       {feedbackOpen && <FeedbackModal onClose={() => setFeedbackOpen(false)} />}
+
+      {/* picker -> peak detail (or -> add-your-own-peak) is one chain, all
+          state lives here rather than in whichever page happens to be
+          mounted, since this button needs to work from any route */}
+      {pickerOpen && (
+        <PeakPicker
+          onClose={() => setPickerOpen(false)}
+          onSelectPeak={(mountain) => {
+            setPickerOpen(false)
+            setSelectedMountain(mountain)
+          }}
+          onAddOwnPeak={() => {
+            setPickerOpen(false)
+            setShowAddPeak(true)
+          }}
+        />
+      )}
+      {selectedMountain && (
+        <MountainDetailModal
+          mountain={selectedMountain}
+          collections={COLLECTIONS_BY_MOUNTAIN.get(selectedMountain.id) ?? []}
+          onClose={() => setSelectedMountain(null)}
+        />
+      )}
+      {showAddPeak && <AddPeakModal onClose={() => setShowAddPeak(false)} />}
     </div>
   )
 }
 
-function Sidebar() {
+function Sidebar({ onLogClimb }: { onLogClimb: () => void }) {
   const { theme, setTheme } = useTheme()
   const { unit, setUnit } = useUnit()
 
@@ -53,6 +86,10 @@ function Sidebar() {
         <SummitPinIcon className={styles.brandMark} />
         <span>Summit Atlas</span>
       </div>
+
+      <button type="button" className={styles.logClimbButton} onClick={onLogClimb}>
+        + Log a climb
+      </button>
 
       <div className={styles.navItems}>
         {NAV_ITEMS.map(({ to, label, icon: Icon, end }) => (
