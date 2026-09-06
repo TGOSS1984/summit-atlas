@@ -6,6 +6,7 @@ import { DashboardPage } from './pages/DashboardPage'
 import { ExplorePage } from './pages/ExplorePage'
 import { MapPage } from './pages/MapPage'
 import { ListsPage } from './pages/ListsPage'
+import { PublicProfilePage } from './pages/PublicProfilePage'
 
 function App() {
   return (
@@ -19,6 +20,10 @@ function App() {
           <Route path="/map" element={<MapPage />} />
           <Route path="/lists" element={<ListsPage />} />
         </Route>
+        {/* deliberately outside the Layout shell - no sidebar, no sign-in
+            state, no picker/palette. a visitor here isn't using the app,
+            they're viewing one public page */}
+        <Route path="/u/:uid" element={<PublicProfilePage />} />
       </Routes>
     </BrowserRouter>
   )

@@ -1,0 +1,129 @@
+.page {
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  padding: 32px 24px 60px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--text-secondary);
+  max-width: 640px;
+  margin: 0 auto 32px;
+}
+
+.headerIcon {
+  width: 20px;
+  height: 20px;
+  color: var(--accent);
+}
+
+.hero {
+  max-width: 640px;
+  margin: 0 auto 28px;
+}
+
+.name {
+  font-family: var(--font-display);
+  font-size: 30px;
+  margin: 0;
+}
+
+.meta {
+  color: var(--text-secondary);
+  font-size: 14px;
+  margin-top: 8px;
+}
+
+.section {
+  max-width: 640px;
+  margin: 0 auto 28px;
+}
+
+.section h2 {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-tertiary);
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 8px;
+  margin-bottom: 12px;
+}
+
+.section h3 {
+  font-size: 14px;
+  color: var(--accent);
+  margin: 16px 0 8px;
+}
+
+.cert {
+  font-size: 13.5px;
+  margin: 4px 0;
+}
+
+.yearGroup {
+  margin-bottom: 8px;
+}
+
+.entry {
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.entryHead {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 13.5px;
+}
+
+.peak {
+  font-weight: 600;
+}
+
+.times {
+  font-weight: 500;
+  color: var(--text-tertiary);
+  font-size: 12px;
+}
+
+.elev {
+  color: var(--text-tertiary);
+  font-size: 12.5px;
+  flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.bullets {
+  margin: 6px 0 0;
+  padding-left: 18px;
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+.status {
+  max-width: 640px;
+  margin: 0 auto;
+  color: var(--text-tertiary);
+  font-size: 14px;
+  text-align: center;
+  padding: 40px 0;
+}
+
+.footer {
+  max-width: 640px;
+  margin: 40px auto 0;
+  text-align: center;
+  font-size: 12px;
+  color: var(--text-tertiary);
+}
+
+.footerLink {
+  color: var(--accent);
+  font-weight: 600;
+}

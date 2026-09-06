@@ -4,6 +4,7 @@ import { exportClimbsFile, parseImportedFile } from '../../store/climbsStore'
 import { exportGpxFile } from '../../utils/gpxExport'
 import { useAllMountains } from '../../hooks/useAllMountains'
 import { ResumeBuilderModal } from '../resume/ResumeBuilderModal'
+import { ShareProfileControl } from './ShareProfileControl'
 import styles from './DataControls.module.css'
 
 export function DataControls() {
@@ -65,6 +66,7 @@ export function DataControls() {
         onChange={handleImport}
         className={styles.hiddenInput}
       />
+      <ShareProfileControl />
       {message && <p className={styles.message}>{message}</p>}
       {resumeOpen && <ResumeBuilderModal onClose={() => setResumeOpen(false)} />}
     </div>

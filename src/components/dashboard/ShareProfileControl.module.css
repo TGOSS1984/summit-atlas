@@ -1,0 +1,55 @@
+.wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.button {
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--text);
+  border-radius: var(--radius-sm);
+  padding: 9px 16px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.button:hover {
+  border-color: var(--border-strong);
+  background: var(--card-hover);
+}
+
+.linkRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg-elevated);
+  border-radius: var(--radius-sm);
+  padding: 6px 6px 6px 12px;
+}
+
+.link {
+  font-size: 12.5px;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 220px;
+}
+
+.copyButton {
+  border: none;
+  background: var(--accent);
+  color: var(--accent-ink);
+  border-radius: calc(var(--radius-sm) - 3px);
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.copyButton:hover {
+  background: var(--accent-bright);
+}

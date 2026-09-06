@@ -44,6 +44,7 @@ This is the global follow-up to **Summit Log UK**, which did the same thing but 
 - **Export/import** your data as JSON, m/ft toggle, dark/light theme toggle, all persisted
 - **Sign in with Google (optional)** — syncs your climbs and custom peaks to Firestore so they follow you across devices. Fully optional; the app's `localStorage`-only behavior is unchanged if you never sign in, and unchanged again if you never set up a Firebase project at all
 - **Climbing résumé** — a builder for skills, courses/certifications, and per-peak highlight bullets, exported as a clean PDF via the browser's own print dialog (no PDF library — a dedicated print stylesheet does the formatting). Syncs to the cloud alongside climbs/custom peaks if you're signed in
+- **Public shareable profile** — a read-only page at `/u/<your-uid>` showing your résumé + stats, no sign-in required to view. Off by default; "Share profile" in the dashboard's data controls flips it on, and it's a raw Firestore `shared` flag gating a second security rule (see `.env.example`) — nothing renders there until that's explicitly turned on
 
 ## Dataset
 
