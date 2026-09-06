@@ -12,6 +12,7 @@ import { COLLECTIONS_BY_MOUNTAIN } from '../../data/collectionsByMountain'
 import type { Mountain } from '../../types/mountain'
 import { AccountArea } from './AccountArea'
 import { NAV_ITEMS } from './navItems'
+import { CollectionCompleteWatcher } from './CollectionCompleteWatcher'
 import styles from './Layout.module.css'
 
 export function Layout() {
@@ -42,6 +43,7 @@ export function Layout() {
         <Outlet />
       </main>
       <TabBar />
+      <CollectionCompleteWatcher />
 
       {/* fixed bottom-right rather than peakbook's bottom-left - bottom-left
           on our layout would sit under the sidebar on desktop and get lost
