@@ -145,6 +145,40 @@
   display: none;
 }
 
+/* pinned feedback button - fixed bottom-right on every breakpoint. mobile
+   offset clears the fixed tab bar (see .tabbar below) rather than sitting
+   under it */
+.feedbackButton {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 950;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--card);
+  border: 1px solid var(--border-strong);
+  color: var(--text-secondary);
+  box-shadow: var(--shadow);
+  transition:
+    color 0.15s,
+    background 0.15s,
+    transform 0.15s;
+}
+
+.feedbackButton:hover {
+  color: var(--text);
+  background: var(--card-hover);
+  transform: translateY(-2px);
+}
+
+.feedbackButton svg {
+  width: 20px;
+  height: 20px;
+}
+
 /* below this, the sidebar gives way to a top bar (brand + toggles) and a
    fixed bottom tab bar - same breakpoint peakbook uses for the same swap */
 @media (max-width: 760px) {
@@ -158,6 +192,13 @@
 
   .main {
     padding: 24px 18px 84px;
+  }
+
+  .feedbackButton {
+    bottom: calc(64px + env(safe-area-inset-bottom));
+    right: 14px;
+    width: 40px;
+    height: 40px;
   }
 
   .mobileTopBar {

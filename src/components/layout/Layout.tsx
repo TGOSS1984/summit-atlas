@@ -1,7 +1,9 @@
+import { useState } from 'react'
 import { NavLink, Outlet } from 'react-router-dom'
 import { useTheme } from '../../context/ThemeContext'
 import { useUnit } from '../../context/UnitContext'
 import { SummitPinIcon } from '../common/SummitPinIcon'
+import { FeedbackModal } from '../common/FeedbackModal'
 import { AccountArea } from './AccountArea'
 import styles from './Layout.module.css'
 
@@ -13,6 +15,8 @@ const NAV_ITEMS = [
 ]
 
 export function Layout() {
+  const [feedbackOpen, setFeedbackOpen] = useState(false)
+
   return (
     <div className={styles.app}>
       <Sidebar />
@@ -21,6 +25,20 @@ export function Layout() {
         <Outlet />
       </main>
       <TabBar />
+
+      {/* fixed bottom-right rather than peakbook's bottom-left - bottom-left
+          on our layout would sit under the sidebar on desktop and get lost
+          near the tab bar's first icon on mobile */}
+      <button
+        type="button"
+        className={styles.feedbackButton}
+        onClick={() => setFeedbackOpen(true)}
+        title="Send feedback"
+        aria-label="Send feedback"
+      >
+        <FeedbackIcon />
+      </button>
+      {feedbackOpen && <FeedbackModal onClose={() => setFeedbackOpen(false)} />}
     </div>
   )
 }
@@ -183,6 +201,14 @@ function MoonIcon() {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <path d="M20.5 14.2A8.5 8.5 0 1 1 9.8 3.5a7 7 0 0 0 10.7 10.7Z" />
+    </svg>
+  )
+}
+
+function FeedbackIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
     </svg>
   )
 }
