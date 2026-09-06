@@ -27,6 +27,7 @@ import { ActivityHeatmap } from '../components/dashboard/ActivityHeatmap'
 import { DataControls } from '../components/dashboard/DataControls'
 import { DemoDataBanner } from '../components/dashboard/DemoDataBanner'
 import { EmptyDashboardHero } from '../components/dashboard/EmptyDashboardHero'
+import { PersonalRecords } from '../components/dashboard/PersonalRecords'
 import { AccountArea } from '../components/layout/AccountArea'
 import { Modal } from '../components/common/Modal'
 import { CollectionDetail } from '../components/lists/CollectionDetail'
@@ -95,6 +96,8 @@ export function DashboardPage() {
         <StatCard label="Countries" value={countries} />
         <StatCard label="Continents" value={continents} sublabel="of 7" />
       </div>
+
+      <PersonalRecords ascents={ascents} />
 
       <h2 className={styles.sectionTitle}>Collections</h2>
       <div className={styles.ringGrid}>
