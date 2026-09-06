@@ -45,6 +45,7 @@ This is the global follow-up to **Summit Log UK**, which did the same thing but 
 - **Sign in with Google (optional)** — syncs your climbs and custom peaks to Firestore so they follow you across devices. Fully optional; the app's `localStorage`-only behavior is unchanged if you never sign in, and unchanged again if you never set up a Firebase project at all
 - **Climbing résumé** — a builder for skills, courses/certifications, and per-peak highlight bullets, exported as a clean PDF via the browser's own print dialog (no PDF library — a dedicated print stylesheet does the formatting). Syncs to the cloud alongside climbs/custom peaks if you're signed in
 - **Public shareable profile** — a read-only page at `/u/<your-uid>` showing your résumé + stats, no sign-in required to view. Off by default; "Share profile" in the dashboard's data controls flips it on, and it's a raw Firestore `shared` flag gating a second security rule (see `.env.example`) — nothing renders there until that's explicitly turned on
+- **Photo on a climb** — attach one photo per ascent from the log-climb form. Stored inline as a resized/compressed base64 string on the climb record itself (max 800px, JPEG ~70% quality) rather than a real file upload — no Firebase Storage dependency, works even with zero backend configured. Trade-off worth knowing: this does bloat `localStorage` and the synced Firestore payload as photos pile up; fine at normal use, not built to hold hundreds of full climbs' worth
 
 ## Dataset
 

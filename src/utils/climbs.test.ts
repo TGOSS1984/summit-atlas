@@ -55,4 +55,11 @@ describe('isValidClimbsState', () => {
     expect(isValidClimbsState({ everest: [{ note: 'missing date' }] })).toBe(false)
     expect(isValidClimbsState({ everest: 'not an array' })).toBe(false)
   })
+
+  it('accepts a climb with a photo and rejects a non-string photo', () => {
+    expect(isValidClimbsState({ everest: [{ date: '2020-05-01', photo: 'data:image/jpeg;base64,abc' }] })).toBe(
+      true,
+    )
+    expect(isValidClimbsState({ everest: [{ date: '2020-05-01', photo: 12345 }] })).toBe(false)
+  })
 })

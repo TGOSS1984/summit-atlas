@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from 'react'
+import { useState, type ChangeEvent, type FormEvent } from 'react'
 import type { Mountain } from '../../types/mountain'
 import type { Collection } from '../../types/collection'
 import { useClimbs } from '../../context/ClimbsContext'
@@ -6,6 +6,7 @@ import { useUnit } from '../../context/UnitContext'
 import { useCustomPeaks } from '../../context/CustomPeaksContext'
 import { formatElevation } from '../../utils/units'
 import { getWikiExtract } from '../../utils/wiki'
+import { compressPhoto } from '../../utils/photoUpload'
 import { Modal } from '../common/Modal'
 import styles from './MountainDetailModal.module.css'
 
@@ -23,13 +24,30 @@ export function MountainDetailModal({ mountain, collections, onClose }: Mountain
   const wiki = getWikiExtract(mountain.id)
   const [date, setDate] = useState('')
   const [note, setNote] = useState('')
+  const [photo, setPhoto] = useState<string | undefined>(undefined)
+  const [photoError, setPhotoError] = useState<string | null>(null)
+  const [previewPhoto, setPreviewPhoto] = useState<string | null>(null)
 
   function handleSubmit(e: FormEvent) {
     e.preventDefault()
     if (!date) return
-    logClimb(mountain.id, { date, note: note.trim() || undefined })
+    logClimb(mountain.id, { date, note: note.trim() || undefined, photo })
     setDate('')
     setNote('')
+    setPhoto(undefined)
+    setPhotoError(null)
+  }
+
+  async function handlePhotoChange(e: ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    e.target.value = '' // clears the input so selecting the same file again still fires onChange
+    if (!file) return
+    setPhotoError(null)
+    try {
+      setPhoto(await compressPhoto(file))
+    } catch (err) {
+      setPhotoError(err instanceof Error ? err.message : 'Could not process that photo.')
+    }
   }
 
   function handleRemove() {
@@ -117,10 +135,29 @@ export function MountainDetailModal({ mountain, collections, onClose }: Mountain
             onChange={(e) => setNote(e.target.value)}
             className={styles.noteInput}
           />
+          <label className={styles.photoButton} title="Attach a photo">
+            {photo ? (
+              <img src={photo} alt="" className={styles.photoThumb} />
+            ) : (
+              <span className={styles.photoPlaceholder}>+ Photo</span>
+            )}
+            <input type="file" accept="image/*" onChange={handlePhotoChange} className={styles.hiddenFileInput} />
+          </label>
+          {photo && (
+            <button
+              type="button"
+              className={styles.photoClear}
+              onClick={() => setPhoto(undefined)}
+              aria-label="Remove attached photo"
+            >
+              ✕
+            </button>
+          )}
           <button type="submit" className={styles.submitButton}>
             Log climb
           </button>
         </form>
+        {photoError && <p className={styles.photoError}>{photoError}</p>}
 
         {climbs.length > 0 ? (
           <ul className={styles.climbList}>
@@ -128,6 +165,16 @@ export function MountainDetailModal({ mountain, collections, onClose }: Mountain
               <li key={`${climb.date}-${index}`} className={styles.climbRow}>
                 <span className={styles.climbDate}>{climb.date}</span>
                 {climb.note && <span className={styles.climbNote}>{climb.note}</span>}
+                {climb.photo && (
+                  <button
+                    type="button"
+                    className={styles.climbPhotoThumb}
+                    onClick={() => setPreviewPhoto(climb.photo!)}
+                    aria-label="View photo"
+                  >
+                    <img src={climb.photo} alt="" />
+                  </button>
+                )}
                 <button
                   type="button"
                   className={styles.removeButton}
@@ -149,6 +196,12 @@ export function MountainDetailModal({ mountain, collections, onClose }: Mountain
           <button type="button" className={styles.removeCustomButton} onClick={handleRemove}>
             Remove this custom peak
           </button>
+        </div>
+      )}
+
+      {previewPhoto && (
+        <div className={styles.lightbox} onClick={() => setPreviewPhoto(null)}>
+          <img src={previewPhoto} alt="" className={styles.lightboxImage} />
         </div>
       )}
     </Modal>

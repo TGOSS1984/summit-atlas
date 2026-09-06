@@ -38,7 +38,8 @@ export function isValidClimbsState(value: unknown): value is ClimbsState {
           typeof entry === 'object' &&
           entry !== null &&
           typeof (entry as ClimbRecord).date === 'string' &&
-          ((entry as ClimbRecord).note === undefined || typeof (entry as ClimbRecord).note === 'string'),
+          ((entry as ClimbRecord).note === undefined || typeof (entry as ClimbRecord).note === 'string') &&
+          ((entry as ClimbRecord).photo === undefined || typeof (entry as ClimbRecord).photo === 'string'),
       ),
   )
 }
