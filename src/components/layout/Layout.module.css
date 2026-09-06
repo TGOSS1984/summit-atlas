@@ -39,6 +39,33 @@
   color: var(--accent);
 }
 
+.searchButton {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--text-tertiary);
+  border-radius: var(--radius-sm);
+  padding: 9px 12px;
+  font-size: 13px;
+  margin-bottom: 10px;
+}
+
+.searchButton:hover {
+  border-color: var(--border-strong);
+  color: var(--text-secondary);
+}
+
+.searchKbd {
+  border: 1px solid var(--border-strong);
+  border-radius: 4px;
+  padding: 1px 5px;
+  font-family: inherit;
+  font-size: 10.5px;
+}
+
 .logClimbButton {
   width: 100%;
   border: none;

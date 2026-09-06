@@ -1,33 +1,42 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { NavLink, Outlet } from 'react-router-dom'
 import { useTheme } from '../../context/ThemeContext'
 import { useUnit } from '../../context/UnitContext'
 import { SummitPinIcon } from '../common/SummitPinIcon'
 import { FeedbackModal } from '../common/FeedbackModal'
 import { PeakPicker } from '../common/PeakPicker'
+import { CommandPalette } from '../common/CommandPalette'
 import { MountainDetailModal } from '../mountain/MountainDetailModal'
 import { AddPeakModal } from '../mountain/AddPeakModal'
 import { COLLECTIONS_BY_MOUNTAIN } from '../../data/collectionsByMountain'
 import type { Mountain } from '../../types/mountain'
 import { AccountArea } from './AccountArea'
+import { NAV_ITEMS } from './navItems'
 import styles from './Layout.module.css'
-
-const NAV_ITEMS = [
-  { to: '/', label: 'Dashboard', icon: DashboardIcon, end: true },
-  { to: '/explore', label: 'Explore', icon: ExploreIcon },
-  { to: '/map', label: 'Map', icon: MapIcon },
-  { to: '/lists', label: 'Lists', icon: ListsIcon },
-]
 
 export function Layout() {
   const [feedbackOpen, setFeedbackOpen] = useState(false)
   const [pickerOpen, setPickerOpen] = useState(false)
+  const [paletteOpen, setPaletteOpen] = useState(false)
   const [selectedMountain, setSelectedMountain] = useState<Mountain | null>(null)
   const [showAddPeak, setShowAddPeak] = useState(false)
 
+  // Cmd+K on Mac, Ctrl+K everywhere else - global rather than scoped to one
+  // page, same reasoning as the picker's state living here
+  useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault()
+        setPaletteOpen((open) => !open)
+      }
+    }
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [])
+
   return (
     <div className={styles.app}>
-      <Sidebar onLogClimb={() => setPickerOpen(true)} />
+      <Sidebar onLogClimb={() => setPickerOpen(true)} onOpenPalette={() => setPaletteOpen(true)} />
       <MobileTopBar />
       <main className={styles.main}>
         <Outlet />
@@ -64,6 +73,15 @@ export function Layout() {
           }}
         />
       )}
+      {paletteOpen && (
+        <CommandPalette
+          onClose={() => setPaletteOpen(false)}
+          onSelectPeak={(mountain) => {
+            setPaletteOpen(false)
+            setSelectedMountain(mountain)
+          }}
+        />
+      )}
       {selectedMountain && (
         <MountainDetailModal
           mountain={selectedMountain}
@@ -76,7 +94,7 @@ export function Layout() {
   )
 }
 
-function Sidebar({ onLogClimb }: { onLogClimb: () => void }) {
+function Sidebar({ onLogClimb, onOpenPalette }: { onLogClimb: () => void; onOpenPalette: () => void }) {
   const { theme, setTheme } = useTheme()
   const { unit, setUnit } = useUnit()
 
@@ -86,6 +104,11 @@ function Sidebar({ onLogClimb }: { onLogClimb: () => void }) {
         <SummitPinIcon className={styles.brandMark} />
         <span>Summit Atlas</span>
       </div>
+
+      <button type="button" className={styles.searchButton} onClick={onOpenPalette}>
+        <span>Search…</span>
+        <kbd className={styles.searchKbd}>⌘K</kbd>
+      </button>
 
       <button type="button" className={styles.logClimbButton} onClick={onLogClimb}>
         + Log a climb
@@ -246,42 +269,6 @@ function FeedbackIcon() {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
-    </svg>
-  )
-}
-
-function DashboardIcon() {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <rect x="3" y="3" width="7" height="9" rx="1.5" />
-      <rect x="14" y="3" width="7" height="5" rx="1.5" />
-      <rect x="14" y="12" width="7" height="9" rx="1.5" />
-      <rect x="3" y="16" width="7" height="5" rx="1.5" />
-    </svg>
-  )
-}
-
-function ExploreIcon() {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <circle cx="12" cy="12" r="10" />
-      <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" />
-    </svg>
-  )
-}
-
-function MapIcon() {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M9 3v15M15 6v15M4 6l5-3 6 3 5-3v15l-5 3-6-3-5 3V6z" />
-    </svg>
-  )
-}
-
-function ListsIcon() {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="m3 17 2 2 4-4M3 7l2 2 4-4M13 6h8M13 12h8M13 18h8" />
     </svg>
   )
 }
