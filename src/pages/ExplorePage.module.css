@@ -113,10 +113,6 @@
   cursor: default;
 }
 
-.climbedChipsRow {
-  display: block;
-}
-
 .pageHeader {
   display: flex;
   align-items: center;
@@ -163,10 +159,6 @@
   }
 
   .filterGroup {
-    display: none;
-  }
-
-  .climbedChipsRow {
     display: none;
   }
 

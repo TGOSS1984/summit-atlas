@@ -126,6 +126,11 @@ export function ExplorePage() {
           activeId={filters.collectionId}
           onSelect={(collectionId) => updateFilters({ collectionId })}
         />
+        <FilterChips
+          options={CLIMBED_STATUS_OPTIONS}
+          activeId={filters.climbedStatus}
+          onSelect={(climbedStatus) => updateFilters({ climbedStatus })}
+        />
       </div>
 
       <div className={styles.countRow}>
@@ -179,20 +184,11 @@ export function ExplorePage() {
 
       {visible.length === 0 && <p className={styles.empty}>Nothing matches those filters.</p>}
 
-      {/* climbed/unclimbed sits down here with pagination rather than up
-          with the continent/collection chips - Tom's call, keeps it right
-          next to the thing it actually changes (how many pages there are).
-          stays outside the pageCount > 1 check so it's still there to fix
-          an over-filtered "nothing matches" state above */}
+      {/* pagination only now - climbed/unclimbed moved up with the other
+          filter chips per Tom's call, this used to also hold that chip
+          group down here next to the thing it actually changes (page
+          count), reversed once it turned out to be too easy to miss */}
       <div className={styles.bottomBar}>
-        <div className={styles.climbedChipsRow}>
-          <FilterChips
-            options={CLIMBED_STATUS_OPTIONS}
-            activeId={filters.climbedStatus}
-            onSelect={(climbedStatus) => updateFilters({ climbedStatus })}
-          />
-        </div>
-
         {pageCount > 1 && (
           <div className={styles.pagination}>
             <button type="button" disabled={currentPage === 1} onClick={() => setPage((p) => p - 1)}>
