@@ -43,15 +43,23 @@
   border-color: var(--accent-soft);
 }
 
-.texture {
+/* photo bleeds off the top-right corner, faded to transparent on its own
+   left edge (baked into the source file) so it blends into the card
+   without needing separate light/dark exports. mask-image handles the
+   fade toward the text at the bottom - a plain opacity alone would still
+   leave a visible hard edge where the image rectangle ends */
+.textureImage {
   position: absolute;
-  top: -70px;
-  right: -70px;
-  width: 220px;
-  height: 220px;
-  color: var(--accent);
-  opacity: 0.1;
+  top: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top right;
+  opacity: 0.45;
   pointer-events: none;
+  mask-image: linear-gradient(to bottom, black 55%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, black 55%, transparent 100%);
 }
 
 .valueFeatured {
