@@ -2,7 +2,7 @@ import { useAuth } from '../../context/AuthContext'
 import styles from './AccountArea.module.css'
 
 export function AccountArea() {
-  const { user, configured, signIn, signOut } = useAuth()
+  const { user, configured, authError, signIn, signOut } = useAuth()
 
   if (user) {
     return (
@@ -27,15 +27,18 @@ export function AccountArea() {
   }
 
   return (
-    <button
-      type="button"
-      className={styles.googleBtn}
-      onClick={() => void signIn()}
-      title={configured ? 'Sign in with Google' : 'Add a Firebase config to enable sign-in - see .env.example'}
-    >
-      <GoogleGlyph />
-      <span>Sign in with Google</span>
-    </button>
+    <div className={styles.signInWrap}>
+      <button
+        type="button"
+        className={styles.googleBtn}
+        onClick={() => void signIn()}
+        title={configured ? 'Sign in with Google' : 'Add a Firebase config to enable sign-in - see .env.example'}
+      >
+        <GoogleGlyph />
+        <span>Sign in with Google</span>
+      </button>
+      {authError && <p className={styles.authError}>{authError}</p>}
+    </div>
   )
 }
 

@@ -1,3 +1,16 @@
+.signInWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.authError {
+  margin: 0;
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: var(--red);
+}
+
 .googleBtn {
   width: 100%;
   display: flex;
