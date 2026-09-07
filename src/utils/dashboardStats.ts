@@ -46,6 +46,33 @@ export function getCollectionProgress(
   return { climbed, total: collection.peakIds.length }
 }
 
+export interface CollectionCompletionInfo {
+  collection: Collection
+  climbed: number
+  total: number
+  remaining: number
+}
+
+// in-progress collections (started, not finished) closest to done first -
+// used for the mobile dashboard's curated collections row, which doesn't
+// have room for all of them the way the desktop grid does. excludes
+// untouched (0 climbed) and already-100% collections - neither is "closest
+// to finishing" in any useful sense
+export function getClosestToCompletionCollections(
+  collections: Collection[],
+  climbedIds: Set<string>,
+  limit: number,
+): CollectionCompletionInfo[] {
+  return collections
+    .map((collection) => {
+      const { climbed, total } = getCollectionProgress(collection, climbedIds)
+      return { collection, climbed, total, remaining: total - climbed }
+    })
+    .filter((info) => info.climbed > 0 && info.remaining > 0)
+    .sort((a, b) => a.remaining - b.remaining || b.climbed - a.climbed)
+    .slice(0, limit)
+}
+
 // --- dashboard v2 additions below (hero comparison, per-year chart, altitude bands, timeline) ---
 
 // Everest's currently accepted elevation (2020 China/Nepal joint survey) -

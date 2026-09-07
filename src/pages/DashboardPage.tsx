@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { MOUNTAINS } from '../data/mountains'
 import { COLLECTIONS } from '../data/collections'
 import { useClimbs } from '../context/ClimbsContext'
@@ -8,6 +9,7 @@ import { formatElevation } from '../utils/units'
 import { getCollectionMountains } from '../utils/collectionMountains'
 import {
   getCollectionProgress,
+  getClosestToCompletionCollections,
   getContinentsClimbedCount,
   getCountriesClimbedCount,
   getHighestClimbed,
@@ -49,9 +51,23 @@ export function DashboardPage() {
   // re-sorts or re-buckets this same list rather than re-deriving it
   const ascents = useMemo(() => getAllAscents(allMountains, climbs), [allMountains, climbs])
 
+  // mobile's curated collections row - closest to finishing first. falls
+  // back to the first few collections (not curated) if nothing's actually
+  // in progress yet, so the section still shows something on a fresh
+  // account rather than coming up empty
+  const MOBILE_COLLECTIONS_LIMIT = 6
+  const mobileCollections = useMemo(() => {
+    const curated = getClosestToCompletionCollections(COLLECTIONS, climbedIds, MOBILE_COLLECTIONS_LIMIT)
+    if (curated.length > 0) return curated
+    return COLLECTIONS.slice(0, MOBILE_COLLECTIONS_LIMIT).map((collection) => {
+      const { climbed, total } = getCollectionProgress(collection, climbedIds)
+      return { collection, climbed, total, remaining: total - climbed }
+    })
+  }, [climbedIds])
+
   const openCollection = COLLECTIONS.find((c) => c.id === openCollectionId) ?? null
 
-  // both hooks above have to run before this check - bailing out earlier
+  // all hooks above have to run before this check - bailing out earlier
   // than that would break React's rules of hooks the moment someone hits
   // an empty logbook
   if (climbedIds.size === 0) {
@@ -99,19 +115,42 @@ export function DashboardPage() {
 
       <PersonalRecords ascents={ascents} />
 
-      <h2 className={styles.sectionTitle}>Collections</h2>
-      <div className={styles.ringGrid}>
-        {COLLECTIONS.map((collection) => {
-          const { climbed } = getCollectionProgress(collection, climbedIds)
-          return (
+      <div className={styles.desktopCollections}>
+        <h2 className={styles.sectionTitle}>Collections</h2>
+        <div className={styles.ringGrid}>
+          {COLLECTIONS.map((collection) => {
+            const { climbed } = getCollectionProgress(collection, climbedIds)
+            return (
+              <CollectionRing
+                key={collection.id}
+                collection={collection}
+                climbedCount={climbed}
+                onSelect={() => setOpenCollectionId(collection.id)}
+              />
+            )
+          })}
+        </div>
+      </div>
+
+      {/* mobile doesn't have room for all of these the way the desktop
+          grid does - a curated "closest to finishing" subset plus a link
+          into Lists for the full picture, rather than the same 27 rings
+          just wrapping onto a dozen rows */}
+      <div className={styles.mobileCollections}>
+        <h2 className={styles.sectionTitle}>Collections</h2>
+        <div className={styles.ringGrid}>
+          {mobileCollections.map(({ collection, climbed }) => (
             <CollectionRing
               key={collection.id}
               collection={collection}
               climbedCount={climbed}
               onSelect={() => setOpenCollectionId(collection.id)}
             />
-          )
-        })}
+          ))}
+        </div>
+        <Link to="/lists" className={styles.viewAllLink}>
+          View all {COLLECTIONS.length} collections →
+        </Link>
       </div>
 
       <div className={styles.dashColumns}>

@@ -14,6 +14,7 @@ import {
 } from '../utils/filterMountains'
 import { MountainCard } from '../components/mountain/MountainCard'
 import { FilterChips } from '../components/explore/FilterChips'
+import { FilterSheet } from '../components/explore/FilterSheet'
 import { MountainDetailModal } from '../components/mountain/MountainDetailModal'
 import { AddPeakModal } from '../components/mountain/AddPeakModal'
 import type { Mountain } from '../types/mountain'
@@ -52,6 +53,7 @@ export function ExplorePage() {
   const [page, setPage] = useState(1)
   const [selectedMountain, setSelectedMountain] = useState<Mountain | null>(null)
   const [showAddPeak, setShowAddPeak] = useState(false)
+  const [filterSheetOpen, setFilterSheetOpen] = useState(false)
 
   // custom peaks fold straight into the same browsable set - filters,
   // pagination and the max-elevation lookup below all just see one array
@@ -65,6 +67,10 @@ export function ExplorePage() {
   )
 
   const sorted = useMemo(() => sortMountains(filtered, sortBy), [filtered, sortBy])
+
+  const activeFilterCount = [filters.continent, filters.collectionId, filters.climbedStatus].filter(
+    (v) => v !== null,
+  ).length
 
   const pageCount = Math.max(1, Math.ceil(sorted.length / PAGE_SIZE))
   const currentPage = Math.min(page, pageCount)
@@ -96,6 +102,18 @@ export function ExplorePage() {
         onChange={(e) => updateFilters({ search: e.target.value })}
         className={styles.search}
       />
+
+      {/* mobile-only trigger for the FilterSheet below - the always-visible
+          chip rows (desktop, right below) turned into a wall of ~35 buttons
+          on a narrow screen once collections passed 20-something. hidden
+          above 760px via CSS, .filterGroup is hidden below it */}
+      <button
+        type="button"
+        className={styles.mobileFiltersButton}
+        onClick={() => setFilterSheetOpen(true)}
+      >
+        Filters{activeFilterCount > 0 ? ` · ${activeFilterCount}` : ''}
+      </button>
 
       <div className={styles.filterGroup}>
         <FilterChips
@@ -167,11 +185,13 @@ export function ExplorePage() {
           stays outside the pageCount > 1 check so it's still there to fix
           an over-filtered "nothing matches" state above */}
       <div className={styles.bottomBar}>
-        <FilterChips
-          options={CLIMBED_STATUS_OPTIONS}
-          activeId={filters.climbedStatus}
-          onSelect={(climbedStatus) => updateFilters({ climbedStatus })}
-        />
+        <div className={styles.climbedChipsRow}>
+          <FilterChips
+            options={CLIMBED_STATUS_OPTIONS}
+            activeId={filters.climbedStatus}
+            onSelect={(climbedStatus) => updateFilters({ climbedStatus })}
+          />
+        </div>
 
         {pageCount > 1 && (
           <div className={styles.pagination}>
@@ -201,6 +221,22 @@ export function ExplorePage() {
       )}
 
       {showAddPeak && <AddPeakModal onClose={() => setShowAddPeak(false)} />}
+
+      {filterSheetOpen && (
+        <FilterSheet
+          continentOptions={CONTINENT_OPTIONS}
+          collectionOptions={COLLECTION_OPTIONS}
+          climbedStatusOptions={CLIMBED_STATUS_OPTIONS}
+          continent={filters.continent}
+          collectionId={filters.collectionId}
+          climbedStatus={filters.climbedStatus}
+          resultCount={filtered.length}
+          onSelectContinent={(continent) => updateFilters({ continent })}
+          onSelectCollection={(collectionId) => updateFilters({ collectionId })}
+          onSelectClimbedStatus={(climbedStatus) => updateFilters({ climbedStatus })}
+          onClose={() => setFilterSheetOpen(false)}
+        />
+      )}
     </div>
   )
 }

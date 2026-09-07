@@ -8,6 +8,7 @@ import {
   getHighestClimbed,
   getTotalElevationClimbed,
   getCollectionProgress,
+  getClosestToCompletionCollections,
   getEverestMultiple,
   getAllAscents,
   getClimbsPerYear,
@@ -60,6 +61,41 @@ describe('getCollectionProgress', () => {
 
   it('handles nothing climbed', () => {
     expect(getCollectionProgress(collection, new Set())).toEqual({ climbed: 0, total: 3 })
+  })
+})
+
+describe('getClosestToCompletionCollections', () => {
+  const started: Collection = { id: 'started', name: 'Started', tagline: '', colorToken: 'accent', peakIds: ['a', 'b', 'c', 'd'] }
+  const almostDone: Collection = { id: 'almost', name: 'Almost', tagline: '', colorToken: 'green', peakIds: ['a', 'b', 'c'] }
+  const untouched: Collection = { id: 'untouched', name: 'Untouched', tagline: '', colorToken: 'gold', peakIds: ['x', 'y'] }
+  const finished: Collection = { id: 'finished', name: 'Finished', tagline: '', colorToken: 'ice', peakIds: ['a'] }
+  const collections = [started, almostDone, untouched, finished]
+
+  it('sorts by fewest peaks remaining, not by percentage or total size', () => {
+    const climbed = new Set(['a', 'b', 'c']) // started: 3/4 (1 left), almost: 3/3 (done), untouched: 0/2, finished: 1/1 (done)
+    const result = getClosestToCompletionCollections(collections, climbed, 5)
+    expect(result.map((r) => r.collection.id)).toEqual(['started'])
+  })
+
+  it('excludes untouched collections and already-100% collections', () => {
+    const climbed = new Set(['a'])
+    // 'a' alone: started 1/4 and almost 1/3 both in progress, finished 1/1
+    // (excluded, already done), untouched has none of its peaks climbed
+    // (excluded) - almost has fewer remaining (2) than started (3), so it
+    // sorts first
+    const result = getClosestToCompletionCollections(collections, climbed, 5)
+    expect(result.map((r) => r.collection.id)).toEqual(['almost', 'started'])
+  })
+
+  it('respects the limit', () => {
+    const climbed = new Set(['a']) // both "almost" and "started" qualify - limit truncates to the closer one
+    const result = getClosestToCompletionCollections(collections, climbed, 1)
+    expect(result).toHaveLength(1)
+    expect(result[0].collection.id).toBe('almost')
+  })
+
+  it('returns an empty list when nothing is in progress', () => {
+    expect(getClosestToCompletionCollections(collections, new Set(), 5)).toEqual([])
   })
 })
 
