@@ -1,4 +1,8 @@
+<div align="center">
+
 # Summit Atlas
+
+<img src="public/images/summit-atlas-logo-transparent.png" alt="Summit Atlas logo" width="120">
 
 [![React](https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=white&labelColor=13232B)](https://react.dev)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white&labelColor=13232B)](https://www.typescriptlang.org)
@@ -6,6 +10,8 @@
 [![Leaflet](https://img.shields.io/badge/Leaflet-map-199900?logo=leaflet&logoColor=white&labelColor=13232B)](https://leafletjs.com)
 [![status](https://img.shields.io/badge/status-in%20development-E64833?labelColor=13232B)]()
 [![license](https://img.shields.io/badge/license-TBD-lightgrey?labelColor=13232B)]()
+
+</div>
 
 An atlas of the world's summits. Track what you've climbed, browse curated lists (Seven Summits, every Munro, every Colorado 14er, national high points, and a lot more), and see it all on a map and a dashboard that actually feels good to look at.
 

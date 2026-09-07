@@ -79,7 +79,15 @@ export function DashboardPage() {
         <div className={styles.accountAreaMobile}>
           <AccountArea />
         </div>
-        <h1>Dashboard</h1>
+        {/* first-run welcome moment - this is the actual first thing a new
+            visitor sees, so it leads with the brand rather than the plain
+            "Dashboard" heading. Reverts to normal the instant there's real
+            (or demo) data, since a returning user wants function over
+            branding by then */}
+        <div className={styles.welcomeHeader}>
+          <img src="/images/summit-atlas-logo-transparent.png" alt="" className={styles.welcomeLogo} />
+          <h1 className={styles.welcomeTitle}>Summit Atlas</h1>
+        </div>
         <EmptyDashboardHero />
       </div>
     )
