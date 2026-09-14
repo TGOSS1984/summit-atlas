@@ -9,6 +9,7 @@ import {
   getTotalElevationClimbed,
   getCollectionProgress,
   getClosestToCompletionCollections,
+  getCountryBreakdown,
   getEverestMultiple,
   getAllAscents,
   getClimbsPerYear,
@@ -177,5 +178,34 @@ describe('getAltitudeBands', () => {
     // band as m, relabelled" - this is the whole point of separate edges
     const bands = getAltitudeBands(bandMountains, climbed, 'ft')
     expect(bands.find((b) => b.label === '25,000 ft+')?.count).toBe(1)
+  })
+})
+describe('getCountryBreakdown', () => {
+  it('counts climbed peaks per country, sorted descending', () => {
+    const climbed = new Set(['a', 'b', 'c']) // country X: a,c (2) - country Y: b (1)
+    const result = getCountryBreakdown(MOUNTAINS, climbed, 5)
+    expect(result).toEqual([
+      { country: 'X', flag: '', count: 2 },
+      { country: 'Y', flag: '', count: 1 },
+    ])
+  })
+
+  it('respects the limit, keeping the highest counts', () => {
+    const manyCountryMountains: Mountain[] = [
+      { id: '1', name: '1', elevation: 1, country: 'A', flag: '', continent: 'Europe', range: '', lat: 0, lng: 0 },
+      { id: '2', name: '2', elevation: 1, country: 'A', flag: '', continent: 'Europe', range: '', lat: 0, lng: 0 },
+      { id: '3', name: '3', elevation: 1, country: 'B', flag: '', continent: 'Europe', range: '', lat: 0, lng: 0 },
+      { id: '4', name: '4', elevation: 1, country: 'C', flag: '', continent: 'Europe', range: '', lat: 0, lng: 0 },
+    ]
+    const climbed = new Set(['1', '2', '3', '4'])
+    const result = getCountryBreakdown(manyCountryMountains, climbed, 2)
+    expect(result).toEqual([
+      { country: 'A', flag: '', count: 2 },
+      { country: 'B', flag: '', count: 1 },
+    ])
+  })
+
+  it('returns an empty list with nothing climbed', () => {
+    expect(getCountryBreakdown(MOUNTAINS, new Set(), 5)).toEqual([])
   })
 })
