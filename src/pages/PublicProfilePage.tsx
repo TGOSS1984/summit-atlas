@@ -155,7 +155,10 @@ export function PublicProfilePage() {
                         {entry.mountain.flag} {entry.mountain.name}
                         {entry.dates.length > 1 && <span className={styles.times}> ×{entry.dates.length}</span>}
                       </span>
-                      <span className={styles.elev}>{formatElevation(entry.mountain.elevation, unit)}</span>
+                      <span className={styles.elev}>
+                        {formatElevation(entry.mountain.elevation, unit)}
+                        {entry.grade ? ` · ${entry.grade}` : ''}
+                      </span>
                     </div>
                     {bullets.length > 0 && (
                       <ul className={styles.bullets}>

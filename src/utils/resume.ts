@@ -5,6 +5,7 @@ export interface FoldedAscent {
   mountain: Mountain
   dates: string[]
   note?: string
+  grade?: string
 }
 
 // a peak climbed 3 times folds into one résumé row carrying all 3 dates,
@@ -19,8 +20,14 @@ export function foldRepeatAscents(ascents: Ascent[]): FoldedAscent[] {
     if (existing) {
       existing.dates.push(ascent.date)
       if (!existing.note && ascent.note) existing.note = ascent.note
+      if (!existing.grade && ascent.grade) existing.grade = ascent.grade
     } else {
-      byId.set(ascent.mountain.id, { mountain: ascent.mountain, dates: [ascent.date], note: ascent.note })
+      byId.set(ascent.mountain.id, {
+        mountain: ascent.mountain,
+        dates: [ascent.date],
+        note: ascent.note,
+        grade: ascent.grade,
+      })
     }
   }
   return [...byId.values()]

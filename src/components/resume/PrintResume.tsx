@@ -96,6 +96,7 @@ export function PrintResume() {
                       <span className={styles.peakMeta}>
                         {formatElevation(entry.mountain.elevation, unit)} · {entry.mountain.range} ·{' '}
                         {entry.mountain.country}
+                        {entry.grade ? ` · ${entry.grade}` : ''}
                       </span>
                       <span className={styles.date}>
                         {entry.dates.map((d) => (

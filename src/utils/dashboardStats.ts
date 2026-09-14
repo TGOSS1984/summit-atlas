@@ -89,6 +89,7 @@ export interface Ascent {
   mountain: Mountain
   date: string
   note?: string
+  grade?: string
 }
 
 // flattens the { mountainId: ClimbRecord[] } store into one list, newest
@@ -103,7 +104,7 @@ export function getAllAscents(mountains: Mountain[], climbs: ClimbsState): Ascen
     // the climbs store - skip it rather than crash the dashboard over it
     if (!mountain) continue
     for (const record of records) {
-      ascents.push({ mountain, date: record.date, note: record.note })
+      ascents.push({ mountain, date: record.date, note: record.note, grade: record.grade })
     }
   }
   return ascents.sort((a, b) => b.date.localeCompare(a.date))
@@ -209,6 +210,34 @@ export function getContinentBreakdown(
   return [...counts.entries()]
     .map(([continent, count]) => ({ continent, count }))
     .sort((a, b) => b.count - a.count)
+}
+
+export interface CountryCount {
+  country: string
+  flag: string
+  count: number
+}
+
+// same shape as getContinentBreakdown, capped to a limit - unlike the 7
+// continents, a well-traveled logbook can easily rack up 30+ countries,
+// which is exactly the "encyclopedic, not personal" territory the
+// dashboard's been deliberately avoiding elsewhere (see PersonalRecords,
+// the mobile collections curation)
+export function getCountryBreakdown(
+  mountains: Mountain[],
+  climbedIds: Set<string>,
+  limit: number,
+): CountryCount[] {
+  const counts = new Map<string, { flag: string; count: number }>()
+  for (const m of getClimbedMountains(mountains, climbedIds)) {
+    const existing = counts.get(m.country)
+    if (existing) existing.count += 1
+    else counts.set(m.country, { flag: m.flag, count: 1 })
+  }
+  return [...counts.entries()]
+    .map(([country, { flag, count }]) => ({ country, flag, count }))
+    .sort((a, b) => b.count - a.count)
+    .slice(0, limit)
 }
 
 export interface CumulativePoint {

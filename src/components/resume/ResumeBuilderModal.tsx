@@ -194,6 +194,7 @@ export function ResumeBuilderModal({ onClose }: ResumeBuilderModalProps) {
                       <span className={styles.ascentTimes}>×{entry.dates.length}</span>
                     )}
                     <span className={styles.highlightElev}>{formatElevation(entry.mountain.elevation, unit)}</span>
+                    {entry.grade && <span className={styles.highlightElev}>{entry.grade}</span>}
                     <span className={styles.highlightDates}>{entry.dates.map(formatDate).join(' · ')}</span>
                   </div>
                   <textarea

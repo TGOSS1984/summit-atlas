@@ -24,6 +24,7 @@ export function MountainDetailModal({ mountain, collections, onClose }: Mountain
   const wiki = getWikiExtract(mountain.id)
   const [date, setDate] = useState('')
   const [note, setNote] = useState('')
+  const [grade, setGrade] = useState('')
   const [photo, setPhoto] = useState<string | undefined>(undefined)
   const [photoError, setPhotoError] = useState<string | null>(null)
   const [previewPhoto, setPreviewPhoto] = useState<string | null>(null)
@@ -31,9 +32,10 @@ export function MountainDetailModal({ mountain, collections, onClose }: Mountain
   function handleSubmit(e: FormEvent) {
     e.preventDefault()
     if (!date) return
-    logClimb(mountain.id, { date, note: note.trim() || undefined, photo })
+    logClimb(mountain.id, { date, note: note.trim() || undefined, grade: grade.trim() || undefined, photo })
     setDate('')
     setNote('')
+    setGrade('')
     setPhoto(undefined)
     setPhotoError(null)
   }
@@ -130,6 +132,14 @@ export function MountainDetailModal({ mountain, collections, onClose }: Mountain
           />
           <input
             type="text"
+            placeholder="Grade (optional)"
+            value={grade}
+            onChange={(e) => setGrade(e.target.value)}
+            className={styles.gradeInput}
+            maxLength={20}
+          />
+          <input
+            type="text"
             placeholder="Note (optional)"
             value={note}
             onChange={(e) => setNote(e.target.value)}
@@ -164,6 +174,7 @@ export function MountainDetailModal({ mountain, collections, onClose }: Mountain
             {climbs.map((climb, index) => (
               <li key={`${climb.date}-${index}`} className={styles.climbRow}>
                 <span className={styles.climbDate}>{climb.date}</span>
+                {climb.grade && <span className={styles.climbGrade}>{climb.grade}</span>}
                 {climb.note && <span className={styles.climbNote}>{climb.note}</span>}
                 {climb.photo && (
                   <button
