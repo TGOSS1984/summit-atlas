@@ -10,8 +10,11 @@
 [![Leaflet](https://img.shields.io/badge/Leaflet-map-199900?logo=leaflet&logoColor=white&labelColor=13232B)](https://leafletjs.com)
 [![status](https://img.shields.io/badge/status-in%20development-E64833?labelColor=13232B)]()
 [![license](https://img.shields.io/badge/license-TBD-lightgrey?labelColor=13232B)]()
+[![live](https://img.shields.io/badge/live-summit--atlas--eta.vercel.app-2F9E6E?labelColor=13232B)](https://summit-atlas-eta.vercel.app/)
 
 </div>
+
+**Live:** [summit-atlas-eta.vercel.app](https://summit-atlas-eta.vercel.app/)
 
 An atlas of the world's summits. Track what you've climbed, browse curated lists (Seven Summits, every Munro, every Colorado 14er, national high points, and a lot more), and see it all on a map and a dashboard that actually feels good to look at.
 
@@ -127,10 +130,11 @@ Keeping this section honestly rather than pretending everything went smoothly, b
 - **`<script>` tags don't execute when embedded in SVG via React/`dangerouslySetInnerHTML`.** Tried wiring in a self-contained procedurally-generated mountain SVG (had its whole generation algorithm as an inline `<script>`) directly into a card component. Browsers don't run scripts inserted via `innerHTML`, full stop — that's a security rule, not a React quirk. Had to port the entire generation algorithm into a real TS module that runs via `useMemo` and returns plain path/polygon data for JSX to render, instead of relying on the script executing itself.
 - **Cloud sync has no debounce and no offline queue yet.** Every climb/custom-peak change writes straight to Firestore on its own `useEffect`, and if `setDoc` fails (offline, permissions) it just logs to the console rather than retrying or telling the person anything went wrong. Fine at this scale and this is a solo project's Firestore usage, but worth hardening if it ever needs to feel bulletproof.
 - **A stray `position: relative` on a modal's hero section silently ate click events on the close button.** The hero rendered *after* the close button in the DOM and became a positioned box sitting on top of it. Looked completely fine visually — the X was right there — just didn't respond to clicks. Removed the unnecessary `position: relative` and gave the close button its own explicit `z-index` as a safety net so it can't happen again from some other future positioned element.
+- **A filename case mismatch (`demoresume.ts` vs. the `demoResume` import) built fine locally on Windows and failed on Vercel.** Windows' filesystem is case-insensitive, so VS Code and the local dev server didn't care that the file on disk and the import didn't match case exactly. Vercel builds on Linux, where they're different filenames entirely — `tsc` failed with `TS2307: Cannot find module`. Renamed the file to match. Worth a periodic sanity check on filename casing generally when developing on Windows and deploying to Linux-based hosting.
 
 ## Deploying
 
-Not deployed anywhere yet — this section is "what's needed," not "here's the live URL."
+Live at **[summit-atlas-eta.vercel.app](https://summit-atlas-eta.vercel.app/)**, hosted on Vercel.
 
 **What you'll need set at the host level:**
 - `VITE_CARTO_API_KEY` — same key as local dev. Without it the map still works, just with CARTO's watermark.
@@ -140,8 +144,12 @@ Not deployed anywhere yet — this section is "what's needed," not "here's the l
 **Output directory:** `dist/`
 **Framework:** Vite — any static host that can run an npm build script works (Vercel, Netlify, Cloudflare Pages, etc.). No server-side code of my own anywhere, no API routes. Firestore is the one exception to "everything's client-side, `localStorage`-backed" — it's Google's managed backend, not something this repo runs, and it's entirely optional.
 
-**Not done yet, worth doing before or shortly after a real deploy:**
-- No `vercel.json`/`netlify.toml` or CI build check committed yet — that's still its own separate piece of work.
+Deployed on Vercel specifically: zero-config Vite detection handled the build command and output directory on its own. Two things worth doing that aren't automatic:
+- Add every `VITE_*` env var in the Vercel project's Environment Variables settings — a missing one doesn't fail the build, it just silently degrades (map watermark, sign-in quietly not working).
+- Add the deployed domain (`summit-atlas-eta.vercel.app`, plus any custom domain later) to Firebase Console → Authentication → Settings → Authorized domains, or Google sign-in fails there the same way it does on an unauthorized `localhost`.
+
+**Not done yet, worth doing at some point:**
+- No `vercel.json` or CI build check committed yet — the zero-config Vite detection has been enough so far, but a `vercel.json` would matter if a client-side route ever 404s on a hard refresh in production.
 - No PWA manifest — favicon and apple-touch-icon are both sorted, but there's no `manifest.json`, so "Add to Home Screen" won't behave properly on Android (iOS is fine off `apple-touch-icon.png` alone).
 - `theme-color` meta tag only responds to OS-level `prefers-color-scheme`, not the in-app manual toggle — minor, but means picking dark mode manually while your OS is set to light leaves the browser chrome the "wrong" color.
 - Wiki cache is stale for the vast majority of the dataset (see Scripts above) — not a blocker for deploying, but worth knowing most mountain detail pages won't have a description yet.
