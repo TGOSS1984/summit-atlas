@@ -18,12 +18,14 @@
     <meta name="theme-color" content="#172B34" media="(prefers-color-scheme: dark)" />
 
     <!-- set the theme attribute before anything paints, so there's no
-         flash of the wrong theme while React boots up -->
+         flash of the wrong theme while React boots up. dark is the default
+         landing theme now - a saved choice in localStorage still wins, but
+         a first-time visitor no longer falls back to their OS's
+         prefers-color-scheme, they land on dark regardless of it -->
     <script>
       (function () {
         var stored = localStorage.getItem('summit-atlas-theme')
-        var theme =
-          stored || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+        var theme = stored || 'dark'
         document.documentElement.setAttribute('data-theme', theme)
       })()
     </script>

@@ -13,11 +13,14 @@ interface ThemeContextValue {
 const ThemeContext = createContext<ThemeContextValue | undefined>(undefined)
 
 // mirrors the inline script in index.html so the first React render already
-// agrees with whatever's on the <html> tag — no flash, no fighting itself
+// agrees with whatever's on the <html> tag — no flash, no fighting itself.
+// dark is the default landing theme now: a saved choice still wins, but a
+// first-time visitor no longer falls back to prefers-color-scheme, they
+// land on dark regardless of their OS setting
 function getInitialTheme(): Theme {
   const stored = localStorage.getItem(STORAGE_KEY)
   if (stored === 'light' || stored === 'dark') return stored
-  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+  return 'dark'
 }
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
